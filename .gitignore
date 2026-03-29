@@ -1,0 +1,5 @@
+main.o
+startup.o
+project.elf
+project.map
+project.bin
