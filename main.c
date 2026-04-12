@@ -47,7 +47,7 @@ struct RCC
 //定义RCC初地址
 #define RCC ((volatile struct RCC*)0x40021000)
 
-//定义SysTick定时器
+//定义SysTick寄存器
 struct SysTick
 {
     volatile unsigned int CAS;//控制及状态寄存器
@@ -56,8 +56,41 @@ struct SysTick
     volatile unsigned int CALV;//校准数值寄存器
 };
 
-//定义Sys宏
+//定义SysTick初地址
 #define SysTick ((volatile struct SysTick*)0xE000E010)
+
+struct Flash
+{
+    volatile unsigned int ACR;
+    volatile unsigned int KEYR;
+    volatile unsigned int OPTKEYR;
+    volatile unsigned int SR;
+    volatile unsigned int CR;
+    volatile unsigned int AR;
+    volatile unsigned int RESERVED;//保留
+    volatile unsigned int OBR;
+    volatile unsigned int WRPR;
+};
+
+//定义Flash初地址
+#define Flash ((volatile struct Flash*)0x40022000)
+
+void SystemInit(void) 
+{
+    SET_BIT((RCC->CR),(1 << 16));//HSE使能
+    while(READ_BIT((RCC->CR),(1 << 17)) == 0);//等待HSE就绪
+    SET_BIT((RCC->CFGR),(1 << 16));//设置HSE作为PLL输入时钟
+    CLEAN_BIT((RCC->CFGR),(0xF << 18));
+    SET_BIT((RCC->CFGR),(7 << 18));//设置PLL倍频系数，当前值：9倍
+    SET_BIT((RCC->CR),(1 << 24 ));//PLL使能
+    while(READ_BIT((RCC->CR),(1 << 25)) == 0);//等待PLL锁定
+    SET_BIT((RCC->CR),(1 << 19));//CSS使能
+    CLEAN_BIT((Flash->ACR),(7));
+    SET_BIT((Flash->ACR),(2));//设置Flash延时
+    CLEAN_BIT((RCC->CFGR),(3));
+    SET_BIT((RCC->CFGR),(2));//切换系统时钟为PLL倍频后的HSE
+    while(((RCC->CFGR >> 2) & 3) != 2);//确认系统时钟切换状态
+}
 
 //定义引脚选择宏
 #define GPIOA 0
@@ -234,7 +267,7 @@ void delay_us(int delay_time)
 #define ACK_OFF 1
 
 //定义延时宏对应不同延时需求
-#define delay_normal 1
+#define delay_normal 5
 #define delay_init 100000
 
 void i2c_start(void)
@@ -374,7 +407,6 @@ void oled_display(const unsigned char *display_num)
 }
 
 // 骗过链接器
-void SystemInit(void) {}
 void __libc_init_array(void) {}
 
 //PC13
@@ -382,11 +414,8 @@ void __libc_init_array(void) {}
 #define GPIOC_CRH (*(volatile unsigned int*)0x40011004)
 #define GPIOC_ODR (*(volatile unsigned int*)0x4001100C)
 
-//PC13延时
-#define delay_pc13 500000
-
 //动画延时
-#define delay_animation 50
+#define delay_animation 500000
 
 int main(void) 
 {
@@ -403,8 +432,6 @@ int main(void)
     oled_display(nyan_cat);
     while (1)
     {
-        // TOGGLE_BIT(GPIOC_ODR, (1 << 13)); 
-        // delay_us(delay_pc13);
         oled_display(nyancat1);
         delay_us(delay_animation);
         oled_display(nyancat2);
