@@ -29,6 +29,10 @@ struct GPIOx
 #define GPIOB_ADDRESS ((volatile struct GPIOx*)0x40010C00)
 #define GPIOC_ADDRESS ((volatile struct GPIOx*)0x40011000)
 
+//定义BSRR操作
+#define BSRR_SET(REG,BIT) ((REG) = (BIT))
+#define BSRR_CLEAN(REG,BIT) ((REG) = ((BIT) << 16))
+
 //定义RCC寄存器
 struct RCC
 {
@@ -210,33 +214,33 @@ void set_gpio(int gpio_type,int pin_num,int level)//gpio_type为引脚类型，p
     {
         if (level == LOW)
         {
-            CLEAN_BIT((GPIOA_ADDRESS->ODR),(1 << pin_num));
+            BSRR_CLEAN((GPIOA_ADDRESS->BSRR),(1 << pin_num));
         }
         if (level == HIGH)
         {
-            SET_BIT((GPIOA_ADDRESS->ODR),(1 << pin_num));
+            BSRR_SET((GPIOA_ADDRESS->BSRR),(1 << pin_num));
         }        
     }
     if (gpio_type == GPIOB)
     {
         if (level == LOW)
         {
-            CLEAN_BIT((GPIOB_ADDRESS->ODR),(1 << pin_num));
+            BSRR_CLEAN((GPIOB_ADDRESS->BSRR),(1 << pin_num));
         }
         if (level == HIGH)
         {
-            SET_BIT((GPIOB_ADDRESS->ODR),(1 << pin_num));
+            BSRR_SET((GPIOB_ADDRESS->BSRR),(1 << pin_num));
         }        
     }
     if (gpio_type == GPIOC)
     {
         if (level == LOW)
         {
-            CLEAN_BIT((GPIOC_ADDRESS->ODR),(1 << pin_num));
+            BSRR_CLEAN((GPIOC_ADDRESS->BSRR),(1 << pin_num));
         }
         if (level == HIGH)
         {
-            SET_BIT((GPIOC_ADDRESS->ODR),(1 << pin_num));
+            BSRR_SET((GPIOC_ADDRESS->BSRR),(1 << pin_num));
         }        
     }
 }
@@ -256,10 +260,10 @@ void delay_us(int delay_time)
 }
 
 //定义设置高低电平宏
-#define SCK_UP SET_BIT((GPIOA_ADDRESS->ODR),(1 << 5))
-#define SCK_DOWN CLEAN_BIT((GPIOA_ADDRESS->ODR),(1 << 5))
-#define SDA_UP SET_BIT((GPIOA_ADDRESS->ODR),(1 << 10))
-#define SDA_DOWN CLEAN_BIT((GPIOA_ADDRESS->ODR),(1 << 10))
+#define SCK_UP BSRR_SET((GPIOA_ADDRESS->BSRR),(1 << 5))
+#define SCK_DOWN BSRR_CLEAN((GPIOA_ADDRESS->BSRR),(1 << 5))
+#define SDA_UP BSRR_SET((GPIOA_ADDRESS->BSRR),(1 << 10))
+#define SDA_DOWN BSRR_CLEAN((GPIOA_ADDRESS->BSRR),(1 << 10))
 
 //定义ack应答信号检测宏
 #define ACK_DETECTION READ_BIT((GPIOA_ADDRESS->IDR),(1 << 10))
@@ -414,6 +418,9 @@ void __libc_init_array(void) {}
 #define GPIOC_CRH (*(volatile unsigned int*)0x40011004)
 #define GPIOC_ODR (*(volatile unsigned int*)0x4001100C)
 
+//切换延时
+#define delay_change 1000000
+
 //动画延时
 #define delay_animation 80000
 
@@ -430,6 +437,7 @@ int main(void)
     set_gpio(GPIOA,10,HIGH);
     oled_init();
     oled_display(nyan_cat);
+    delay_us(delay_change);
     while (1)
     {
         oled_display(nyancat1);
