@@ -415,7 +415,7 @@ void __libc_init_array(void) {}
 #define GPIOC_ODR (*(volatile unsigned int*)0x4001100C)
 
 //动画延时
-#define delay_animation 500000
+#define delay_animation 80000
 
 int main(void) 
 {
@@ -449,6 +449,36 @@ int main(void)
         oled_display(nyancat8);
         delay_us(delay_animation);
         oled_display(nyancat9);
+        delay_us(delay_animation);
+        oled_display(nyancat10);
+        delay_us(delay_animation);
+        oled_display(nyancat11);
+        delay_us(delay_animation);
+        oled_display(nyancat12);
+        delay_us(delay_animation);
+        oled_display(nyancat13);
+        delay_us(delay_animation);
+        oled_display(nyancat14);
+        delay_us(delay_animation);
+        oled_display(nyancat15);
+        delay_us(delay_animation);
+        oled_display(nyancat16);
+        delay_us(delay_animation);
+        oled_display(nyancat17);
+        delay_us(delay_animation);
+        oled_display(nyancat18);
+        delay_us(delay_animation);
+        oled_display(nyancat19);
+        delay_us(delay_animation);
+        oled_display(nyancat20);
+        delay_us(delay_animation);
+        oled_display(nyancat21);
+        delay_us(delay_animation);
+        oled_display(nyancat22);
+        delay_us(delay_animation);
+        oled_display(nyancat23);
+        delay_us(delay_animation);
+        oled_display(nyancat24);
         delay_us(delay_animation);
     }
 }
