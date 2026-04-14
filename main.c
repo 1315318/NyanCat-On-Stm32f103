@@ -63,6 +63,7 @@ struct SysTick
 //定义SysTick初地址
 #define SysTick ((volatile struct SysTick*)0xE000E010)
 
+//定义Flash寄存器
 struct Flash
 {
     volatile unsigned int ACR;
@@ -78,6 +79,35 @@ struct Flash
 
 //定义Flash初地址
 #define Flash ((volatile struct Flash*)0x40022000)
+
+//定义通用定时器寄存器
+struct TIMx
+{
+    volatile unsigned int CR1;
+    volatile unsigned int CR2;
+    volatile unsigned int SMCR;
+    volatile unsigned int DIER;
+    volatile unsigned int SR;
+    volatile unsigned int EGR;
+    volatile unsigned int CCMR1;
+    volatile unsigned int CCMR2;
+    volatile unsigned int CCER;
+    volatile unsigned int CNT;
+    volatile unsigned int PSC;
+    volatile unsigned int ARR;
+    volatile unsigned int CCR1;
+    volatile unsigned int CCR2;
+    volatile unsigned int CCR3;
+    volatile unsigned int CCR4;
+    volatile unsigned int DCR;
+    volatile unsigned int DMAR;
+}
+
+//定义通用定时寄存器初地址
+#define TIM2_ADDRESS ((volatile struct TIMx*)0x40000000)
+#define TIM3_ADDRESS ((volatile struct TIMx*)0x40000400)
+#define TIM4_ADDRESS ((volatile struct TIMx*)0x40000800)
+#define TIM5_ADDRESS ((volatile struct TIMx*)0x40000C00)
 
 void SystemInit(void) 
 {
