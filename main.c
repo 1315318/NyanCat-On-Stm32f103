@@ -4,7 +4,8 @@ PA15 (JTDI)：JTAG 专用
 PB3 (JTDO)：JTAG 专用
 PB4 (NJTRST)：JTAG 专用*/
 
-#include "nyan_cat.h"//图像数组
+#include "nyancat_video.h"//图像数组
+#include "nyancat_audio.h"//音频数组
 
 //定义位操作
 #define SET_BIT(REG,BIT) ((REG) |= (BIT))//BIT为0的位不变，为1的位设置为1
@@ -101,7 +102,7 @@ struct TIMx
     volatile unsigned int CCR4;
     volatile unsigned int DCR;
     volatile unsigned int DMAR;
-}
+};
 
 //定义通用定时寄存器初地址
 #define TIM2_ADDRESS ((volatile struct TIMx*)0x40000000)
@@ -135,7 +136,7 @@ void SystemInit(void)
 #define GPIO_MODE_PP 0
 #define GPIO_MODE_OL 1
 
-void init_gpio(int gpio_type,int pin_num,int mode)//gpio_type为引脚类型，pin_num为引脚号，范围0～15
+void init_gpio(int gpio_type,int pin_num,int mode)//gpio_type为引脚类型，pin_num为引脚号，范围0～15，mode为输出模式
 {
     if (gpio_type == GPIOA)
     {
@@ -236,8 +237,9 @@ void init_gpio(int gpio_type,int pin_num,int mode)//gpio_type为引脚类型，p
 }
 
 //定义电平宏
-#define HIGH 1
 #define LOW  0 
+#define HIGH 1
+
 void set_gpio(int gpio_type,int pin_num,int level)//gpio_type为引脚类型，pin_num为引脚号，范围0～15
 {
     if (gpio_type == GPIOA)
@@ -287,6 +289,43 @@ void delay_us(int delay_time)
 {
     systick_timing(delay_time);
     while(READ_BIT((SysTick->CAS),(1 << 16)) == 0);
+}
+
+void init_pwm(int prescaler_value)
+{
+    TIMx->PSC == prescaler_value;//设置预分频器的值
+    CLEAN_BIT((TIMx->CR1),(3 << 5));//设置边沿对齐模式
+    CLEAN_BIT((TIMx->CR1),(1 << 4));//设置计数器向上计数
+    CLEAN_BIT((TIMx->CR1),(1 << 1));//允许UEV事件
+    SET_BIT((TIMx->CR1),(1 << 2));//设置更新源为计数器溢出
+    CLEAN_BIT((TIMx->CCMR1),(7 << 4));
+    SET_BIT((TIMx->CCMR1),(6 << 4));//设置PWM模式1
+    SET_BIT((TIMx->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+    SET_BIT((TIMx->CR1),(1 << 7));//开启自动重装载预装载
+    SET_BIT((TIMx->CCMR1),(1));//产生更新事件
+}
+
+//定义TIMx通道宏
+#define CH1 0
+#define CH2 1
+#define CH3 2
+#define CH4 3
+
+//输出极性宏套用前面电平宏定义
+
+void set_pwm(int channel_num,int mode,int count_num)
+{
+    if (mode == LOW)
+    {
+        CLEAN_BIT((TIMx->CCER),(1 << (1 + (channel_num - 1) * 4)));
+    }
+    if (mode == HIGH)
+    {
+        SET_BIT((TIMx->CCER),(1 << (1 + (channel_num - 1) * 4)));
+    }
+    SET_BIT((TIMx->CCER),(1 << (channel - 1) * 4));//输出使能
+    TIMx->CNT == count_num;//写入计数值
+    SET_BIT((TIMx->CR1),(1));//使能计数器
 }
 
 //定义设置高低电平宏
