@@ -108,7 +108,6 @@ struct TIMx
 #define TIM2 ((volatile struct TIMx*)0x40000000)
 #define TIM3 ((volatile struct TIMx*)0x40000400)
 #define TIM4 ((volatile struct TIMx*)0x40000800)
-#define TIM5 ((volatile struct TIMx*)0x40000C00)
 
 void SystemInit(void) 
 {
@@ -138,94 +137,94 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)
     if (gpio_type == GPIOA)
     {
         if (pin_num != 13 && pin_num != 14 && pin_num != 15)
-    {
-        SET_BIT((RCC->APB2ENR),(1 << 2)); 
-        if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
         {
-            if (pin_num >=0 && pin_num <= 7)
+            SET_BIT((RCC->APB2ENR),(1 << 2)); 
+            if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
             {
-                CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOA->CRL),(3 << (pin_num * 4)));
+                if (pin_num >=0 && pin_num <= 7)
+                {
+                    CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
+                    SET_BIT((GPIOA->CRL),(3 << (pin_num * 4)));
+                }
+                if (pin_num >= 8 && pin_num <= 15)
+                {
+                    CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
+                    SET_BIT((GPIOA->CRH),(3 << ((pin_num - 8) * 4)));
+                }
             }
-            if (pin_num >= 8 && pin_num <= 15)
+            if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
             {
-                CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOA->CRH),(3 << ((pin_num - 8) * 4)));
+                if (pin_num >=0 && pin_num <= 7)
+                {
+                    CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
+                    SET_BIT((GPIOA->CRL),(7 << (pin_num * 4)));
+                }
+                if (pin_num >= 8 && pin_num <= 15)
+                {
+                    CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
+                    SET_BIT((GPIOA->CRH),(7 << ((pin_num - 8) * 4)));
+                }
+            }
+            if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
+            {
+                if (pin_num >=0 && pin_num <= 7)
+                {
+                    CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
+                    SET_BIT((GPIOA->CRL),(0xB << (pin_num * 4)));
+                }
+                if (pin_num >= 8 && pin_num <= 15)
+                {
+                    CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
+                    SET_BIT((GPIOA->CRH),(0xB << ((pin_num - 8) * 4)));
+                }
             }
         }
-        if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
-        {
-            if (pin_num >=0 && pin_num <= 7)
-            {
-                CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOA->CRL),(7 << (pin_num * 4)));
-            }
-            if (pin_num >= 8 && pin_num <= 15)
-            {
-                CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOA->CRH),(7 << ((pin_num - 8) * 4)));
-            }
-        }
-        if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
-        {
-            if (pin_num >=0 && pin_num <= 7)
-            {
-                CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOA->CRL),(0xB << (pin_num * 4)));
-            }
-            if (pin_num >= 8 && pin_num <= 15)
-            {
-                CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOA->CRH),(0xB << ((pin_num - 8) * 4)));
-            }
-        }
-    }
     }
     if (gpio_type == GPIOB)
     {
         if (pin_num != 3 && pin_num != 4)
-    {
-        SET_BIT((RCC->APB2ENR),(1 << 3)); 
-        if (mode == GPIO_MODE_PP)  //通用推挽输出,50MHZ
         {
-            if (pin_num >=0 && pin_num <= 7)
+            SET_BIT((RCC->APB2ENR),(1 << 3)); 
+            if (mode == GPIO_MODE_PP)  //通用推挽输出,50MHZ
             {
-                CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOB->CRL),(3 << (pin_num * 4)));
+                if (pin_num >=0 && pin_num <= 7)
+                {
+                    CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
+                    SET_BIT((GPIOB->CRL),(3 << (pin_num * 4)));
+                }
+                if (pin_num >= 8 && pin_num <= 15)
+                {
+                    CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
+                    SET_BIT((GPIOB->CRH),(3 << ((pin_num - 8) * 4)));
+                }
             }
-            if (pin_num >= 8 && pin_num <= 15)
+            if (mode == GPIO_MODE_OL)  //通用开漏输出,50MHZ
             {
-                CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOB->CRH),(3 << ((pin_num - 8) * 4)));
+                if (pin_num >=0 && pin_num <= 7)
+                {
+                    CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
+                    SET_BIT((GPIOB->CRL),(7 << (pin_num * 4)));
+                }
+                if (pin_num >= 8 && pin_num <= 15)
+                {
+                    CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
+                    SET_BIT((GPIOB->CRH),(7 << ((pin_num - 8) * 4)));
+                }
+            }
+            if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
+            {
+                if (pin_num >=0 && pin_num <= 7)
+                {
+                    CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
+                    SET_BIT((GPIOB->CRL),(0xB << (pin_num * 4)));
+                }
+                if (pin_num >= 8 && pin_num <= 15)
+                {
+                    CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
+                    SET_BIT((GPIOB->CRH),(0xB << ((pin_num - 8) * 4)));
+                }
             }
         }
-        if (mode == GPIO_MODE_OL)  //通用开漏输出,50MHZ
-        {
-            if (pin_num >=0 && pin_num <= 7)
-            {
-                CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOB->CRL),(7 << (pin_num * 4)));
-            }
-            if (pin_num >= 8 && pin_num <= 15)
-            {
-                CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOB->CRH),(7 << ((pin_num - 8) * 4)));
-            }
-        }
-        if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
-        {
-            if (pin_num >=0 && pin_num <= 7)
-            {
-                CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOB->CRL),(0xB << (pin_num * 4)));
-            }
-            if (pin_num >= 8 && pin_num <= 15)
-            {
-                CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOB->CRH),(0xB << ((pin_num - 8) * 4)));
-            }
-        }
-    }
     }
     if (gpio_type == GPIOC)
     {
@@ -441,41 +440,6 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
             SET_BIT((TIM4->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }   
     }
-    if (tim_type == TIM5)
-    {
-        TIM5->PSC = 71;                  //设置预分频器的值，当前频率：1MHZ
-        CLEAN_BIT((TIM5->CR1),(3 << 5)); //设置边沿对齐模式
-        CLEAN_BIT((TIM5->CR1),(1 << 4)); //设置计数器向上计数
-        CLEAN_BIT((TIM5->CR1),(1 << 1)); //允许UEV事件
-        SET_BIT((TIM5->CR1),(1 << 2));   //设置更新源为计数器溢出
-        SET_BIT((TIM5->CR1),(1 << 7));   //开启自动重装载预装载
-        SET_BIT((TIM5->EGR),(1));        //产生更新事件
-        SET_BIT((TIM5->CR1),(1));        //使能计数器
-        if (channel_num == CH1)
-        { 
-            CLEAN_BIT((TIM5->CCMR1),(7 << 4));
-            SET_BIT((TIM5->CCMR1),(6 << 4));  //设置PWM模式1
-            SET_BIT((TIM5->CCMR1),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
-        }
-        if (channel_num == CH2)
-        {
-            CLEAN_BIT((TIM5->CCMR1),(7 << 12));
-            SET_BIT((TIM5->CCMR1),(6 << 12)); //设置PWM模式1
-            SET_BIT((TIM5->CCMR1),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
-        }
-        if (channel_num == CH3)
-        {
-            CLEAN_BIT((TIM5->CCMR2),(7 << 4));
-            SET_BIT((TIM5->CCMR2),(6 << 4));  //设置PWM模式1
-            SET_BIT((TIM5->CCMR2),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
-        }
-        if (channel_num == CH4)
-        {
-            CLEAN_BIT((TIM5->CCMR2),(7 << 12));
-            SET_BIT((TIM5->CCMR2),(6 << 12)); //设置PWM模式1
-            SET_BIT((TIM5->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
-        }   
-    }
 }
 
 //输出极性宏套用前面电平宏定义
@@ -487,60 +451,175 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         return;
     }
     int arr_num = 1000000 / frequency;
-    TIMx->ARR = arr_num - 1;                  //写入输出频率值，时钟频率1MHZ
-    int ccr_num = duty_cycle * arr_num / 100; //占空比值 
-    if (channel_num == CH1)
-    { 
-        TIMx->CCR1 = ccr_num;
-        if (mode == LOW)
-        {
-            CLEAN_BIT((TIMx->CCER),(1 << 1));
-        }
-        if (mode == HIGH)
-        {
-            SET_BIT((TIMx->CCER),(1 << 1));
-        }
-        SET_BIT((TIMx->CCER),(1));       //输出使能
-    }
-    if (channel_num == CH2)
+    int ccr_num = duty_cycle * arr_num / 100;
+    if (tim_type == TIM2)
     {
-        TIMx->CCR2 = ccr_num;
-        if (mode == LOW)
-        {
-            CLEAN_BIT((TIMx->CCER),(1 << 5));
+        TIM2->ARR = arr_num - 1;             //写入输出频率值，时钟频率1MHZ
+        if (channel_num == CH1)
+        { 
+            TIM2->CCR1 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM2->CCER),(1 << 1));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM2->CCER),(1 << 1));
+            }
+            SET_BIT((TIM2->CCER),(1));       //输出使能
         }
-        if (mode == HIGH)
+        if (channel_num == CH2)
         {
-            SET_BIT((TIMx->CCER),(1 << 5));
+            TIM2->CCR2 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM2->CCER),(1 << 5));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM2->CCER),(1 << 5));
+            }
+            SET_BIT((TIM2->CCER),(1 << 4));  //输出使能
         }
-        SET_BIT((TIMx->CCER),(1 << 4));  //输出使能
+        if (channel_num == CH3)
+        {
+            TIM2->CCR3 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM2->CCER),(1 << 9));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM2->CCER),(1 << 9));
+            }
+            SET_BIT((TIM2->CCER),(1 << 8));  //输出使能
+        }
+        if (channel_num == CH4)
+        {
+            TIM2->CCR4 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM2->CCER),(1 << 13));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM2->CCER),(1 << 13));
+            }
+            SET_BIT((TIM2->CCER),(1 << 12)); //输出使能
+        }
     }
-    if (channel_num == CH3)
+    if (tim_type == TIM3)
     {
-        TIMx->CCR3 = ccr_num;
-        if (mode == LOW)
-        {
-            CLEAN_BIT((TIMx->CCER),(1 << 9));
+        TIM3->ARR = arr_num - 1;             //写入输出频率值，时钟频率1MHZ
+        if (channel_num == CH1)
+        { 
+            TIM3->CCR1 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM3->CCER),(1 << 1));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM3->CCER),(1 << 1));
+            }
+            SET_BIT((TIM3->CCER),(1));       //输出使能
         }
-        if (mode == HIGH)
+        if (channel_num == CH2)
         {
-            SET_BIT((TIMx->CCER),(1 << 9));
+            TIM3->CCR2 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM3->CCER),(1 << 5));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM3->CCER),(1 << 5));
+            }
+            SET_BIT((TIM3->CCER),(1 << 4));  //输出使能
         }
-        SET_BIT((TIMx->CCER),(1 << 8));  //输出使能
+        if (channel_num == CH3)
+        {
+            TIM3->CCR3 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM3->CCER),(1 << 9));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM3->CCER),(1 << 9));
+            }
+            SET_BIT((TIM3->CCER),(1 << 8));  //输出使能
+        }
+        if (channel_num == CH4)
+        {
+            TIM3->CCR4 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM3->CCER),(1 << 13));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM3->CCER),(1 << 13));
+            }
+            SET_BIT((TIM3->CCER),(1 << 12)); //输出使能
+        }
     }
-    if (channel_num == CH4)
+    if (tim_type == TIM4)
     {
-        TIMx->CCR4 = ccr_num;
-        if (mode == LOW)
-        {
-            CLEAN_BIT((TIMx->CCER),(1 << 13));
+        TIM4->ARR = arr_num - 1;             //写入输出频率值，时钟频率1MHZ
+        if (channel_num == CH1)
+        { 
+            TIM4->CCR1 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM4->CCER),(1 << 1));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM4->CCER),(1 << 1));
+            }
+            SET_BIT((TIM4->CCER),(1));       //输出使能
         }
-        if (mode == HIGH)
+        if (channel_num == CH2)
         {
-            SET_BIT((TIMx->CCER),(1 << 13));
+            TIM4->CCR2 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM4->CCER),(1 << 5));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM4->CCER),(1 << 5));
+            }
+            SET_BIT((TIM4->CCER),(1 << 4));  //输出使能
         }
-        SET_BIT((TIMx->CCER),(1 << 12)); //输出使能
-    }
+        if (channel_num == CH3)
+        {
+            TIM4->CCR3 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM4->CCER),(1 << 9));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM4->CCER),(1 << 9));
+            }
+            SET_BIT((TIM4->CCER),(1 << 8));  //输出使能
+        }
+        if (channel_num == CH4)
+        {
+            TIM4->CCR4 = ccr_num;
+            if (mode == LOW)
+            {
+                CLEAN_BIT((TIM4->CCER),(1 << 13));
+            }
+            if (mode == HIGH)
+            {
+                SET_BIT((TIM4->CCER),(1 << 13));
+            }
+            SET_BIT((TIM4->CCER),(1 << 12)); //输出使能
+        }
+    }   
 }
 
 //定义设置高低电平宏
