@@ -26,9 +26,9 @@ struct GPIOx
 };
 
 //定义GPIO端口初地址
-#define GPIOA_ADDRESS ((volatile struct GPIOx*)0x40010800)
-#define GPIOB_ADDRESS ((volatile struct GPIOx*)0x40010C00)
-#define GPIOC_ADDRESS ((volatile struct GPIOx*)0x40011000)
+#define GPIOA ((volatile struct GPIOx*)0x40010800)
+#define GPIOB ((volatile struct GPIOx*)0x40010C00)
+#define GPIOC ((volatile struct GPIOx*)0x40011000)
 
 //定义BSRR操作
 #define BSRR_SET(REG,BIT) ((REG) = (BIT))
@@ -105,10 +105,10 @@ struct TIMx
 };
 
 //定义通用定时寄存器初地址
-#define TIM2_ADDRESS ((volatile struct TIMx*)0x40000000)
-#define TIM3_ADDRESS ((volatile struct TIMx*)0x40000400)
-#define TIM4_ADDRESS ((volatile struct TIMx*)0x40000800)
-#define TIM5_ADDRESS ((volatile struct TIMx*)0x40000C00)
+#define TIM2 ((volatile struct TIMx*)0x40000000)
+#define TIM3 ((volatile struct TIMx*)0x40000400)
+#define TIM4 ((volatile struct TIMx*)0x40000800)
+#define TIM5 ((volatile struct TIMx*)0x40000C00)
 
 void SystemInit(void) 
 {
@@ -127,16 +127,11 @@ void SystemInit(void)
     while(((RCC->CFGR >> 2) & 3) != 2);//确认系统时钟切换状态
 }
 
-//定义引脚选择宏
-#define GPIOA 0
-#define GPIOB 1
-#define GPIOC 2
-
 //定义输出模式宏
 #define GPIO_MODE_PP 0
 #define GPIO_MODE_OL 1
 
-void init_gpio(int gpio_type,int pin_num,int mode)//gpio_type为引脚类型，pin_num为引脚号，范围0～15，mode为输出模式
+void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type为引脚类型，pin_num为引脚号，范围0～15，mode为输出模式
 {
     if (gpio_type == GPIOA)
     {
@@ -147,26 +142,26 @@ void init_gpio(int gpio_type,int pin_num,int mode)//gpio_type为引脚类型，p
         {
             if (pin_num >=0 && pin_num <= 7)
             {
-                CLEAN_BIT((GPIOA_ADDRESS->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOA_ADDRESS->CRL),(0x3 << (pin_num * 4)));
+                CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
+                SET_BIT((GPIOA->CRL),(0x3 << (pin_num * 4)));
             }
             if (pin_num >= 8 && pin_num <= 15)
             {
-                CLEAN_BIT((GPIOA_ADDRESS->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOA_ADDRESS->CRH),(0x3 << ((pin_num - 8) * 4)));
+                CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
+                SET_BIT((GPIOA->CRH),(0x3 << ((pin_num - 8) * 4)));
             }
         }
             if (mode == GPIO_MODE_OL)//开漏输出
         {
             if (pin_num >=0 && pin_num <= 7)
             {
-                CLEAN_BIT((GPIOA_ADDRESS->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOA_ADDRESS->CRL),(0x7 << (pin_num * 4)));
+                CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
+                SET_BIT((GPIOA->CRL),(0x7 << (pin_num * 4)));
             }
             if (pin_num >= 8 && pin_num <= 15)
             {
-                CLEAN_BIT((GPIOA_ADDRESS->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOA_ADDRESS->CRH),(0x7 << ((pin_num - 8) * 4)));
+                CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
+                SET_BIT((GPIOA->CRH),(0x7 << ((pin_num - 8) * 4)));
             }
         }
     }
@@ -180,26 +175,26 @@ void init_gpio(int gpio_type,int pin_num,int mode)//gpio_type为引脚类型，p
         {
             if (pin_num >=0 && pin_num <= 7)
             {
-                CLEAN_BIT((GPIOB_ADDRESS->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOB_ADDRESS->CRL),(0x3 << (pin_num * 4)));
+                CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
+                SET_BIT((GPIOB->CRL),(0x3 << (pin_num * 4)));
             }
             if (pin_num >= 8 && pin_num <= 15)
             {
-                CLEAN_BIT((GPIOB_ADDRESS->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOB_ADDRESS->CRH),(0x3 << ((pin_num - 8) * 4)));
+                CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
+                SET_BIT((GPIOB->CRH),(0x3 << ((pin_num - 8) * 4)));
             }
         }
             if (mode == GPIO_MODE_OL)//开漏输出
         {
             if (pin_num >=0 && pin_num <= 7)
             {
-                CLEAN_BIT((GPIOB_ADDRESS->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOB_ADDRESS->CRL),(0x7 << (pin_num * 4)));
+                CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
+                SET_BIT((GPIOB->CRL),(0x7 << (pin_num * 4)));
             }
             if (pin_num >= 8 && pin_num <= 15)
             {
-                CLEAN_BIT((GPIOB_ADDRESS->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOB_ADDRESS->CRH),(0x7 << ((pin_num - 8) * 4)));
+                CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
+                SET_BIT((GPIOB->CRH),(0x7 << ((pin_num - 8) * 4)));
             }
         }
     }
@@ -211,26 +206,26 @@ void init_gpio(int gpio_type,int pin_num,int mode)//gpio_type为引脚类型，p
         {
             if (pin_num >=0 && pin_num <= 7)
             {
-                CLEAN_BIT((GPIOC_ADDRESS->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOC_ADDRESS->CRL),(0x3 << (pin_num * 4)));
+                CLEAN_BIT((GPIOC->CRL),(0xF << (pin_num * 4)));
+                SET_BIT((GPIOC->CRL),(0x3 << (pin_num * 4)));
             }
             if (pin_num >= 8 && pin_num <= 15)
             {
-                CLEAN_BIT((GPIOC_ADDRESS->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOC_ADDRESS->CRH),(0x3 << ((pin_num - 8) * 4)));
+                CLEAN_BIT((GPIOC->CRH),(0xF << ((pin_num - 8) * 4)));
+                SET_BIT((GPIOC->CRH),(0x3 << ((pin_num - 8) * 4)));
             }
         }
             if (mode == GPIO_MODE_OL)//开漏输出
         {
             if (pin_num >=0 && pin_num <= 7)
             {
-                CLEAN_BIT((GPIOC_ADDRESS->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOC_ADDRESS->CRL),(0x7 << (pin_num * 4)));
+                CLEAN_BIT((GPIOC->CRL),(0xF << (pin_num * 4)));
+                SET_BIT((GPIOC->CRL),(0x7 << (pin_num * 4)));
             }
             if (pin_num >= 8 && pin_num <= 15)
             {
-                CLEAN_BIT((GPIOC_ADDRESS->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOC_ADDRESS->CRH),(0x7 << ((pin_num - 8) * 4)));
+                CLEAN_BIT((GPIOC->CRH),(0xF << ((pin_num - 8) * 4)));
+                SET_BIT((GPIOC->CRH),(0x7 << ((pin_num - 8) * 4)));
             }
         }
     }
@@ -240,39 +235,39 @@ void init_gpio(int gpio_type,int pin_num,int mode)//gpio_type为引脚类型，p
 #define LOW  0 
 #define HIGH 1
 
-void set_gpio(int gpio_type,int pin_num,int level)//gpio_type为引脚类型，pin_num为引脚号，范围0～15
+void set_gpio(volatile struct GPIOx* gpio_type,int pin_num,int level)//gpio_type为引脚类型，pin_num为引脚号，范围0～15
 {
     if (gpio_type == GPIOA)
     {
         if (level == LOW)
         {
-            BSRR_CLEAN((GPIOA_ADDRESS->BSRR),(1 << pin_num));
+            BSRR_CLEAN((GPIOA->BSRR),(1 << pin_num));
         }
         if (level == HIGH)
         {
-            BSRR_SET((GPIOA_ADDRESS->BSRR),(1 << pin_num));
+            BSRR_SET((GPIOA->BSRR),(1 << pin_num));
         }        
     }
     if (gpio_type == GPIOB)
     {
         if (level == LOW)
         {
-            BSRR_CLEAN((GPIOB_ADDRESS->BSRR),(1 << pin_num));
+            BSRR_CLEAN((GPIOB->BSRR),(1 << pin_num));
         }
         if (level == HIGH)
         {
-            BSRR_SET((GPIOB_ADDRESS->BSRR),(1 << pin_num));
+            BSRR_SET((GPIOB->BSRR),(1 << pin_num));
         }        
     }
     if (gpio_type == GPIOC)
     {
         if (level == LOW)
         {
-            BSRR_CLEAN((GPIOC_ADDRESS->BSRR),(1 << pin_num));
+            BSRR_CLEAN((GPIOC->BSRR),(1 << pin_num));
         }
         if (level == HIGH)
         {
-            BSRR_SET((GPIOC_ADDRESS->BSRR),(1 << pin_num));
+            BSRR_SET((GPIOC->BSRR),(1 << pin_num));
         }        
     }
 }
@@ -291,51 +286,159 @@ void delay_us(int delay_time)
     while(READ_BIT((SysTick->CAS),(1 << 16)) == 0);
 }
 
-void init_pwm(int channel_num)
-{
-    TIMx->PSC = 71;//设置预分频器的值，当前频率：1MHZ
-    CLEAN_BIT((TIMx->CR1),(3 << 5));//设置边沿对齐模式
-    CLEAN_BIT((TIMx->CR1),(1 << 4));//设置计数器向上计数
-    CLEAN_BIT((TIMx->CR1),(1 << 1));//允许UEV事件
-    SET_BIT((TIMx->CR1),(1 << 2));//设置更新源为计数器溢出
-    SET_BIT((TIMx->CR1),(1 << 7));//开启自动重装载预装载
-    SET_BIT((TIMx->EGR),(1));//产生更新事件
-    SET_BIT((TIMx->CR1),(1));//使能计数器
-    if (channel_num == CH1)
-    { 
-        CLEAN_BIT((TIMx->CCMR1),(7 << 4));
-        SET_BIT((TIMx->CCMR1),(6 << 4));//设置PWM模式1
-        SET_BIT((TIMx->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
-    }
-    if (channel_num == CH2)
-    {
-        CLEAN_BIT((TIMx->CCMR1),(7 << 12));
-        SET_BIT((TIMx->CCMR1),(6 << 12));//设置PWM模式1
-        SET_BIT((TIMx->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
-    }
-    if (channel_num == CH3)
-    {
-        CLEAN_BIT((TIMx->CCMR2),(7 << 4));
-        SET_BIT((TIMx->CCMR2),(6 << 4));//设置PWM模式1
-        SET_BIT((TIMx->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
-    }
-    if (channel_num == CH4)
-    {
-        CLEAN_BIT((TIMx->CCMR2),(7 << 12));
-        SET_BIT((TIMx->CCMR2),(6 << 12));//设置PWM模式1
-        SET_BIT((TIMx->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
-    }
-}
-
 //定义TIMx通道宏
 #define CH1 1
 #define CH2 2
 #define CH3 3
 #define CH4 4
 
+void init_pwm(volatile struct TIMx* tim_type,int channel_num)
+{
+    if (tim_type == TIM2)
+    {
+        TIM2->PSC = 71;//设置预分频器的值，当前频率：1MHZ
+        CLEAN_BIT((TIM2->CR1),(3 << 5));//设置边沿对齐模式
+        CLEAN_BIT((TIM2->CR1),(1 << 4));//设置计数器向上计数
+        CLEAN_BIT((TIM2->CR1),(1 << 1));//允许UEV事件
+        SET_BIT((TIM2->CR1),(1 << 2));//设置更新源为计数器溢出
+        SET_BIT((TIM2->CR1),(1 << 7));//开启自动重装载预装载
+        SET_BIT((TIM2->EGR),(1));//产生更新事件
+        SET_BIT((TIM2->CR1),(1));//使能计数器
+        if (channel_num == CH1)
+        { 
+            CLEAN_BIT((TIM2->CCMR1),(7 << 4));
+            SET_BIT((TIM2->CCMR1),(6 << 4));//设置PWM模式1
+            SET_BIT((TIM2->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH2)
+        {
+            CLEAN_BIT((TIM2->CCMR1),(7 << 12));
+            SET_BIT((TIM2->CCMR1),(6 << 12));//设置PWM模式1
+            SET_BIT((TIM2->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH3)
+        {
+            CLEAN_BIT((TIM2->CCMR2),(7 << 4));
+            SET_BIT((TIM2->CCMR2),(6 << 4));//设置PWM模式1
+            SET_BIT((TIM2->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH4)
+        {
+            CLEAN_BIT((TIM2->CCMR2),(7 << 12));
+            SET_BIT((TIM2->CCMR2),(6 << 12));//设置PWM模式1
+            SET_BIT((TIM2->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+        }   
+    }
+    if (tim_type == TIM3)
+    {
+        TIM3->PSC = 71;//设置预分频器的值，当前频率：1MHZ
+        CLEAN_BIT((TIM3->CR1),(3 << 5));//设置边沿对齐模式
+        CLEAN_BIT((TIM3->CR1),(1 << 4));//设置计数器向上计数
+        CLEAN_BIT((TIM3->CR1),(1 << 1));//允许UEV事件
+        SET_BIT((TIM3->CR1),(1 << 2));//设置更新源为计数器溢出
+        SET_BIT((TIM3->CR1),(1 << 7));//开启自动重装载预装载
+        SET_BIT((TIM3->EGR),(1));//产生更新事件
+        SET_BIT((TIM3->CR1),(1));//使能计数器
+        if (channel_num == CH1)
+        { 
+            CLEAN_BIT((TIM3->CCMR1),(7 << 4));
+            SET_BIT((TIM3->CCMR1),(6 << 4));//设置PWM模式1
+            SET_BIT((TIM3->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH2)
+        {
+            CLEAN_BIT((TIM3->CCMR1),(7 << 12));
+            SET_BIT((TIM3->CCMR1),(6 << 12));//设置PWM模式1
+            SET_BIT((TIM3->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH3)
+        {
+            CLEAN_BIT((TIM3->CCMR2),(7 << 4));
+            SET_BIT((TIM3->CCMR2),(6 << 4));//设置PWM模式1
+            SET_BIT((TIM3->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH4)
+        {
+            CLEAN_BIT((TIM3->CCMR2),(7 << 12));
+            SET_BIT((TIM3->CCMR2),(6 << 12));//设置PWM模式1
+            SET_BIT((TIM3->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+        }   
+    }
+    if (tim_type == TIM4)
+    {
+        TIM4->PSC = 71;//设置预分频器的值，当前频率：1MHZ
+        CLEAN_BIT((TIM4->CR1),(3 << 5));//设置边沿对齐模式
+        CLEAN_BIT((TIM4->CR1),(1 << 4));//设置计数器向上计数
+        CLEAN_BIT((TIM4->CR1),(1 << 1));//允许UEV事件
+        SET_BIT((TIM4->CR1),(1 << 2));//设置更新源为计数器溢出
+        SET_BIT((TIM4->CR1),(1 << 7));//开启自动重装载预装载
+        SET_BIT((TIM4->EGR),(1));//产生更新事件
+        SET_BIT((TIM4->CR1),(1));//使能计数器
+        if (channel_num == CH1)
+        { 
+            CLEAN_BIT((TIM4->CCMR1),(7 << 4));
+            SET_BIT((TIM4->CCMR1),(6 << 4));//设置PWM模式1
+            SET_BIT((TIM4->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH2)
+        {
+            CLEAN_BIT((TIM4->CCMR1),(7 << 12));
+            SET_BIT((TIM4->CCMR1),(6 << 12));//设置PWM模式1
+            SET_BIT((TIM4->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH3)
+        {
+            CLEAN_BIT((TIM4->CCMR2),(7 << 4));
+            SET_BIT((TIM4->CCMR2),(6 << 4));//设置PWM模式1
+            SET_BIT((TIM4->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH4)
+        {
+            CLEAN_BIT((TIM4->CCMR2),(7 << 12));
+            SET_BIT((TIM4->CCMR2),(6 << 12));//设置PWM模式1
+            SET_BIT((TIM4->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+        }   
+    }
+    if (tim_type == TIM5)
+    {
+        TIM5->PSC = 71;//设置预分频器的值，当前频率：1MHZ
+        CLEAN_BIT((TIM5->CR1),(3 << 5));//设置边沿对齐模式
+        CLEAN_BIT((TIM5->CR1),(1 << 4));//设置计数器向上计数
+        CLEAN_BIT((TIM5->CR1),(1 << 1));//允许UEV事件
+        SET_BIT((TIM5->CR1),(1 << 2));//设置更新源为计数器溢出
+        SET_BIT((TIM5->CR1),(1 << 7));//开启自动重装载预装载
+        SET_BIT((TIM5->EGR),(1));//产生更新事件
+        SET_BIT((TIM5->CR1),(1));//使能计数器
+        if (channel_num == CH1)
+        { 
+            CLEAN_BIT((TIM5->CCMR1),(7 << 4));
+            SET_BIT((TIM5->CCMR1),(6 << 4));//设置PWM模式1
+            SET_BIT((TIM5->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH2)
+        {
+            CLEAN_BIT((TIM5->CCMR1),(7 << 12));
+            SET_BIT((TIM5->CCMR1),(6 << 12));//设置PWM模式1
+            SET_BIT((TIM5->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH3)
+        {
+            CLEAN_BIT((TIM5->CCMR2),(7 << 4));
+            SET_BIT((TIM5->CCMR2),(6 << 4));//设置PWM模式1
+            SET_BIT((TIM5->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+        }
+        if (channel_num == CH4)
+        {
+            CLEAN_BIT((TIM5->CCMR2),(7 << 12));
+            SET_BIT((TIM5->CCMR2),(6 << 12));//设置PWM模式1
+            SET_BIT((TIM5->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+        }   
+    }
+}
+
 //输出极性宏套用前面电平宏定义
 
-void set_pwm(int channel_num,int mode,int frequency,int duty_cycle)
+void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequency,int duty_cycle)
 {
     if (frequency == 0);
     {
