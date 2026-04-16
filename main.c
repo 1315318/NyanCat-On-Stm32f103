@@ -348,26 +348,30 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM2->CCMR1),(7 << 4));
-            SET_BIT((TIM2->CCMR1),(6 << 4));  //设置PWM模式1
-            SET_BIT((TIM2->CCMR1),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM2->CCMR1),(6 << 4));   //设置PWM模式1
+            SET_BIT((TIM2->CCMR1),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOA,0,GPIO_MODE_AFPP); //设置PA0引脚为复用推挽输出模式
         }
         if (channel_num == CH2)
         {
             CLEAN_BIT((TIM2->CCMR1),(7 << 12));
-            SET_BIT((TIM2->CCMR1),(6 << 12)); //设置PWM模式1
-            SET_BIT((TIM2->CCMR1),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM2->CCMR1),(6 << 12));  //设置PWM模式1
+            SET_BIT((TIM2->CCMR1),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOA,1,GPIO_MODE_AFPP); //设置PA1引脚为复用推挽输出模式
         }
         if (channel_num == CH3)
         {
             CLEAN_BIT((TIM2->CCMR2),(7 << 4));
-            SET_BIT((TIM2->CCMR2),(6 << 4));  //设置PWM模式1
-            SET_BIT((TIM2->CCMR2),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM2->CCMR2),(6 << 4));   //设置PWM模式1
+            SET_BIT((TIM2->CCMR2),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOA,2,GPIO_MODE_AFPP); //设置PA2引脚为复用推挽输出模式
         }
         if (channel_num == CH4)
         {
             CLEAN_BIT((TIM2->CCMR2),(7 << 12));
-            SET_BIT((TIM2->CCMR2),(6 << 12)); //设置PWM模式1
-            SET_BIT((TIM2->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM2->CCMR2),(6 << 12));  //设置PWM模式1
+            SET_BIT((TIM2->CCMR2),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOA,3,GPIO_MODE_AFPP); //设置PA3引脚为复用推挽输出模式
         }   
     }
     if (tim_type == TIM3)
@@ -383,26 +387,30 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM3->CCMR1),(7 << 4));
-            SET_BIT((TIM3->CCMR1),(6 << 4));  //设置PWM模式1
-            SET_BIT((TIM3->CCMR1),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM3->CCMR1),(6 << 4));   //设置PWM模式1
+            SET_BIT((TIM3->CCMR1),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOA,6,GPIO_MODE_AFPP); //设置PA6引脚为复用推挽输出模式
         }
         if (channel_num == CH2)
         {
             CLEAN_BIT((TIM3->CCMR1),(7 << 12));
-            SET_BIT((TIM3->CCMR1),(6 << 12)); //设置PWM模式1
-            SET_BIT((TIM3->CCMR1),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM3->CCMR1),(6 << 12));  //设置PWM模式1
+            SET_BIT((TIM3->CCMR1),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOA,7,GPIO_MODE_AFPP); //设置PA7引脚为复用推挽输出模式
         }
         if (channel_num == CH3)
         {
             CLEAN_BIT((TIM3->CCMR2),(7 << 4));
-            SET_BIT((TIM3->CCMR2),(6 << 4));  //设置PWM模式1
-            SET_BIT((TIM3->CCMR2),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM3->CCMR2),(6 << 4));   //设置PWM模式1
+            SET_BIT((TIM3->CCMR2),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOB,0,GPIO_MODE_AFPP); //设置PB0引脚为复用推挽输出模式
         }
         if (channel_num == CH4)
         {
             CLEAN_BIT((TIM3->CCMR2),(7 << 12));
-            SET_BIT((TIM3->CCMR2),(6 << 12)); //设置PWM模式1
-            SET_BIT((TIM3->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM3->CCMR2),(6 << 12));  //设置PWM模式1
+            SET_BIT((TIM3->CCMR2),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOB,1,GPIO_MODE_AFPP); //设置PB1引脚为复用推挽输出模式
         }   
     }
     if (tim_type == TIM4)
@@ -418,26 +426,30 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM4->CCMR1),(7 << 4));
-            SET_BIT((TIM4->CCMR1),(6 << 4));  //设置PWM模式1
-            SET_BIT((TIM4->CCMR1),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM4->CCMR1),(6 << 4));   //设置PWM模式1
+            SET_BIT((TIM4->CCMR1),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOB,6,GPIO_MODE_AFPP); //设置PB6引脚为复用推挽输出模式
         }
         if (channel_num == CH2)
         {
             CLEAN_BIT((TIM4->CCMR1),(7 << 12));
-            SET_BIT((TIM4->CCMR1),(6 << 12)); //设置PWM模式1
-            SET_BIT((TIM4->CCMR1),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM4->CCMR1),(6 << 12));  //设置PWM模式1
+            SET_BIT((TIM4->CCMR1),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOB,7,GPIO_MODE_AFPP); //设置PB7引脚为复用推挽输出模式
         }
         if (channel_num == CH3)
         {
             CLEAN_BIT((TIM4->CCMR2),(7 << 4));
-            SET_BIT((TIM4->CCMR2),(6 << 4));  //设置PWM模式1
-            SET_BIT((TIM4->CCMR2),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM4->CCMR2),(6 << 4));   //设置PWM模式1
+            SET_BIT((TIM4->CCMR2),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOB,8,GPIO_MODE_AFPP); //设置PB8引脚为复用推挽输出模式
         }
         if (channel_num == CH4)
         {
             CLEAN_BIT((TIM4->CCMR2),(7 << 12));
-            SET_BIT((TIM4->CCMR2),(6 << 12)); //设置PWM模式1
-            SET_BIT((TIM4->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM4->CCMR2),(6 << 12));  //设置PWM模式1
+            SET_BIT((TIM4->CCMR2),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
+            init_gpio(GPIOB,9,GPIO_MODE_AFPP); //设置PB9引脚为复用推挽输出模式
         }   
     }
 }
@@ -773,13 +785,13 @@ void oled_display(const unsigned char *display_num)
     i2c_over();
 }
 
-// 骗过链接器
+//骗过链接器
 void __libc_init_array(void) {}
 
 //PC13
 #define RCC_APB2ENR (*(volatile unsigned int*)0x40021018) 
-#define GPIOC_CRH (*(volatile unsigned int*)0x40011004)
-#define GPIOC_ODR (*(volatile unsigned int*)0x4001100C)
+#define GPIOC_CRH   (*(volatile unsigned int*)0x40011004)
+#define GPIOC_ODR   (*(volatile unsigned int*)0x4001100C)
 
 //切换延时
 #define delay_change 1000000
