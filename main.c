@@ -4,14 +4,14 @@ PA15 (JTDI)：JTAG 专用
 PB3 (JTDO)：JTAG 专用
 PB4 (NJTRST)：JTAG 专用*/
 
-#include "nyancat_video.h"//图像数组
-#include "nyancat_audio.h"//音频数组
+#include "nyancat_video.h" //图像数组
+#include "nyancat_audio.h" //音频数组
 
 //定义位操作
-#define SET_BIT(REG,BIT) ((REG) |= (BIT))//BIT为0的位不变，为1的位设置为1
-#define CLEAN_BIT(REG,BIT) ((REG) &= ~(BIT))//BIT为0的位不变，为1的位清空为0
-#define TOGGLE_BIT(REG,BIT) ((REG) ^= (BIT))//BIT为0的位不变，为1的位切换状态
-#define READ_BIT(REG,BIT) ((REG) & (BIT))//检查REG中对应的BIT设置为1的位的值
+#define SET_BIT(REG,BIT)    ((REG) |= (BIT))  //BIT为0的位不变，为1的位设置为1
+#define CLEAN_BIT(REG,BIT)  ((REG) &= ~(BIT)) //BIT为0的位不变，为1的位清空为0
+#define TOGGLE_BIT(REG,BIT) ((REG) ^= (BIT))  //BIT为0的位不变，为1的位切换状态
+#define READ_BIT(REG,BIT)   ((REG) & (BIT))   //检查REG中对应的BIT设置为1的位的值
 
 //定义GPIO端口寄存器
 struct GPIOx
@@ -31,7 +31,7 @@ struct GPIOx
 #define GPIOC ((volatile struct GPIOx*)0x40011000)
 
 //定义BSRR操作
-#define BSRR_SET(REG,BIT) ((REG) = (BIT))
+#define BSRR_SET(REG,BIT)   ((REG) = (BIT))
 #define BSRR_CLEAN(REG,BIT) ((REG) = ((BIT) << 16))
 
 //定义RCC寄存器
@@ -55,10 +55,10 @@ struct RCC
 //定义SysTick寄存器
 struct SysTick
 {
-    volatile unsigned int CAS;//控制及状态寄存器
-    volatile unsigned int RV;//重装载数值寄存器
-    volatile unsigned int CV;//当前数值寄存器
-    volatile unsigned int CALV;//校准数值寄存器
+    volatile unsigned int CAS;  //控制及状态寄存器
+    volatile unsigned int RV;   //重装载数值寄存器
+    volatile unsigned int CV;   //当前数值寄存器
+    volatile unsigned int CALV; //校准数值寄存器
 };
 
 //定义SysTick初地址
@@ -73,7 +73,7 @@ struct Flash
     volatile unsigned int SR;
     volatile unsigned int CR;
     volatile unsigned int AR;
-    volatile unsigned int RESERVED;//保留
+    volatile unsigned int RESERVED; //保留
     volatile unsigned int OBR;
     volatile unsigned int WRPR;
 };
@@ -112,34 +112,35 @@ struct TIMx
 
 void SystemInit(void) 
 {
-    SET_BIT((RCC->CR),(1 << 16));//HSE使能
-    while(READ_BIT((RCC->CR),(1 << 17)) == 0);//等待HSE就绪
-    SET_BIT((RCC->CFGR),(1 << 16));//设置HSE作为PLL输入时钟
+    SET_BIT((RCC->CR),(1 << 16));              //HSE使能
+    while(READ_BIT((RCC->CR),(1 << 17)) == 0); //等待HSE就绪
+    SET_BIT((RCC->CFGR),(1 << 16));            //设置HSE作为PLL输入时钟
     CLEAN_BIT((RCC->CFGR),(0xF << 18));
-    SET_BIT((RCC->CFGR),(7 << 18));//设置PLL倍频系数，当前值：9倍
-    SET_BIT((RCC->CR),(1 << 24 ));//PLL使能
-    while(READ_BIT((RCC->CR),(1 << 25)) == 0);//等待PLL锁定
-    SET_BIT((RCC->CR),(1 << 19));//CSS使能
+    SET_BIT((RCC->CFGR),(7 << 18));            //设置PLL倍频系数，当前值：9倍
+    SET_BIT((RCC->CR),(1 << 24 ));             //PLL使能
+    while(READ_BIT((RCC->CR),(1 << 25)) == 0); //等待PLL锁定
+    SET_BIT((RCC->CR),(1 << 19));              //CSS使能
     CLEAN_BIT((Flash->ACR),(7));
-    SET_BIT((Flash->ACR),(2));//设置Flash延时
+    SET_BIT((Flash->ACR),(2));                 //设置Flash延时
     CLEAN_BIT((RCC->CFGR),(3));
-    SET_BIT((RCC->CFGR),(2));//切换系统时钟为PLL倍频后的HSE
-    while(((RCC->CFGR >> 2) & 3) != 2);//确认系统时钟切换状态
+    SET_BIT((RCC->CFGR),(2));                  //切换系统时钟为PLL倍频后的HSE
+    while(((RCC->CFGR >> 2) & 3) != 2);        //确认系统时钟切换状态
 }
 
 //定义输出模式宏
-#define GPIO_MODE_PP 0//通用推挽输出模式
-#define GPIO_MODE_OL 1//通用开漏输出模式
-#define GPIO_MODE_AFPP 2//复用推挽输出模式
+#define GPIO_MODE_PP   0 //通用推挽输出模式
+#define GPIO_MODE_OL   1 //通用开漏输出模式
+#define GPIO_MODE_AFPP 2 //复用推挽输出模式
 
-void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type为引脚类型，pin_num为引脚号，范围0～15，mode为输出模式
+//gpio_type为引脚类型，pin_num为引脚号，范围0～15，mode为输出模式
+void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)
 {
     if (gpio_type == GPIOA)
     {
         if (pin_num != 13 && pin_num != 14 && pin_num != 15)
     {
         SET_BIT((RCC->APB2ENR),(1 << 2)); 
-        if (mode == GPIO_MODE_PP)//通用推挽输出,50MHZ
+        if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -152,7 +153,7 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
                 SET_BIT((GPIOA->CRH),(3 << ((pin_num - 8) * 4)));
             }
         }
-        if (mode == GPIO_MODE_OL)//通用开漏输出,50MHZ
+        if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -165,7 +166,7 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
                 SET_BIT((GPIOA->CRH),(7 << ((pin_num - 8) * 4)));
             }
         }
-        if (mode == GPIO_MODE_AFPP)//复用推挽输出模式,50MHZ
+        if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -185,7 +186,7 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
         if (pin_num != 3 && pin_num != 4)
     {
         SET_BIT((RCC->APB2ENR),(1 << 3)); 
-        if (mode == GPIO_MODE_PP)//通用推挽输出,50MHZ
+        if (mode == GPIO_MODE_PP)  //通用推挽输出,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -198,7 +199,7 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
                 SET_BIT((GPIOB->CRH),(3 << ((pin_num - 8) * 4)));
             }
         }
-            if (mode == GPIO_MODE_OL)//通用开漏输出,50MHZ
+        if (mode == GPIO_MODE_OL)  //通用开漏输出,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -211,7 +212,7 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
                 SET_BIT((GPIOB->CRH),(7 << ((pin_num - 8) * 4)));
             }
         }
-        if (mode == GPIO_MODE_PP)//复用推挽输出模式,50MHZ
+        if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -229,7 +230,7 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
     if (gpio_type == GPIOC)
     {
         SET_BIT((RCC->APB2ENR),(1 << 4)); 
-        if (mode == GPIO_MODE_PP)//通用推挽输出,50MHZ
+        if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -242,7 +243,7 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
                 SET_BIT((GPIOC->CRH),(3 << ((pin_num - 8) * 4)));
             }
         }
-            if (mode == GPIO_MODE_OL)//通用开漏输出,50MHZ
+        if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -255,7 +256,7 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
                 SET_BIT((GPIOC->CRH),(7 << ((pin_num - 8) * 4)));
             }
         }
-        if (mode == GPIO_MODE_OL)//复用推挽输出模式,50MHZ
+        if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
         {
             if (pin_num >=0 && pin_num <= 7)
             {
@@ -275,7 +276,8 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)//gpio_type
 #define LOW  0 
 #define HIGH 1
 
-void set_gpio(volatile struct GPIOx* gpio_type,int pin_num,int level)//gpio_type为引脚类型，pin_num为引脚号，范围0～15
+//gpio_type为引脚类型，pin_num为引脚号，范围0～15
+void set_gpio(volatile struct GPIOx* gpio_type,int pin_num,int level)
 {
     if (gpio_type == GPIOA)
     {
@@ -312,12 +314,12 @@ void set_gpio(volatile struct GPIOx* gpio_type,int pin_num,int level)//gpio_type
     }
 }
 
-void systick_timing(int delay_time)//读CAS寄存器第16位判断倒计时是否结束
+void systick_timing(int delay_time) //读CAS寄存器第16位判断倒计时是否结束
 {
-    SysTick->CAS = 0;//CAS寄存器所有位置零
-    SysTick->RV = 0;//重载数值寄存器所有位置零
-    SysTick->RV = delay_time;//写入倒计时值
-    SET_BIT((SysTick->CAS),(1));//开启计时器
+    SysTick->CAS = 0;            //CAS寄存器所有位置零
+    SysTick->RV = 0;             //重载数值寄存器所有位置零
+    SysTick->RV = delay_time;    //写入倒计时值
+    SET_BIT((SysTick->CAS),(1)); //开启计时器
 }
 
 void delay_us(int delay_time)
@@ -336,142 +338,142 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
 {
     if (tim_type == TIM2)
     {
-        TIM2->PSC = 71;//设置预分频器的值，当前频率：1MHZ
-        CLEAN_BIT((TIM2->CR1),(3 << 5));//设置边沿对齐模式
-        CLEAN_BIT((TIM2->CR1),(1 << 4));//设置计数器向上计数
-        CLEAN_BIT((TIM2->CR1),(1 << 1));//允许UEV事件
-        SET_BIT((TIM2->CR1),(1 << 2));//设置更新源为计数器溢出
-        SET_BIT((TIM2->CR1),(1 << 7));//开启自动重装载预装载
-        SET_BIT((TIM2->EGR),(1));//产生更新事件
-        SET_BIT((TIM2->CR1),(1));//使能计数器
+        TIM2->PSC = 71;                  //设置预分频器的值，当前频率：1MHZ
+        CLEAN_BIT((TIM2->CR1),(3 << 5)); //设置边沿对齐模式
+        CLEAN_BIT((TIM2->CR1),(1 << 4)); //设置计数器向上计数
+        CLEAN_BIT((TIM2->CR1),(1 << 1)); //允许UEV事件
+        SET_BIT((TIM2->CR1),(1 << 2));   //设置更新源为计数器溢出
+        SET_BIT((TIM2->CR1),(1 << 7));   //开启自动重装载预装载
+        SET_BIT((TIM2->EGR),(1));        //产生更新事件
+        SET_BIT((TIM2->CR1),(1));        //使能计数器
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM2->CCMR1),(7 << 4));
-            SET_BIT((TIM2->CCMR1),(6 << 4));//设置PWM模式1
-            SET_BIT((TIM2->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM2->CCMR1),(6 << 4));  //设置PWM模式1
+            SET_BIT((TIM2->CCMR1),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH2)
         {
             CLEAN_BIT((TIM2->CCMR1),(7 << 12));
-            SET_BIT((TIM2->CCMR1),(6 << 12));//设置PWM模式1
-            SET_BIT((TIM2->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM2->CCMR1),(6 << 12)); //设置PWM模式1
+            SET_BIT((TIM2->CCMR1),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH3)
         {
             CLEAN_BIT((TIM2->CCMR2),(7 << 4));
-            SET_BIT((TIM2->CCMR2),(6 << 4));//设置PWM模式1
-            SET_BIT((TIM2->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM2->CCMR2),(6 << 4));  //设置PWM模式1
+            SET_BIT((TIM2->CCMR2),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH4)
         {
             CLEAN_BIT((TIM2->CCMR2),(7 << 12));
-            SET_BIT((TIM2->CCMR2),(6 << 12));//设置PWM模式1
-            SET_BIT((TIM2->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM2->CCMR2),(6 << 12)); //设置PWM模式1
+            SET_BIT((TIM2->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }   
     }
     if (tim_type == TIM3)
     {
-        TIM3->PSC = 71;//设置预分频器的值，当前频率：1MHZ
-        CLEAN_BIT((TIM3->CR1),(3 << 5));//设置边沿对齐模式
-        CLEAN_BIT((TIM3->CR1),(1 << 4));//设置计数器向上计数
-        CLEAN_BIT((TIM3->CR1),(1 << 1));//允许UEV事件
-        SET_BIT((TIM3->CR1),(1 << 2));//设置更新源为计数器溢出
-        SET_BIT((TIM3->CR1),(1 << 7));//开启自动重装载预装载
-        SET_BIT((TIM3->EGR),(1));//产生更新事件
-        SET_BIT((TIM3->CR1),(1));//使能计数器
+        TIM3->PSC = 71;                  //设置预分频器的值，当前频率：1MHZ
+        CLEAN_BIT((TIM3->CR1),(3 << 5)); //设置边沿对齐模式
+        CLEAN_BIT((TIM3->CR1),(1 << 4)); //设置计数器向上计数
+        CLEAN_BIT((TIM3->CR1),(1 << 1)); //允许UEV事件
+        SET_BIT((TIM3->CR1),(1 << 2));   //设置更新源为计数器溢出
+        SET_BIT((TIM3->CR1),(1 << 7));   //开启自动重装载预装载
+        SET_BIT((TIM3->EGR),(1));        //产生更新事件
+        SET_BIT((TIM3->CR1),(1));        //使能计数器
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM3->CCMR1),(7 << 4));
-            SET_BIT((TIM3->CCMR1),(6 << 4));//设置PWM模式1
-            SET_BIT((TIM3->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM3->CCMR1),(6 << 4));  //设置PWM模式1
+            SET_BIT((TIM3->CCMR1),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH2)
         {
             CLEAN_BIT((TIM3->CCMR1),(7 << 12));
-            SET_BIT((TIM3->CCMR1),(6 << 12));//设置PWM模式1
-            SET_BIT((TIM3->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM3->CCMR1),(6 << 12)); //设置PWM模式1
+            SET_BIT((TIM3->CCMR1),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH3)
         {
             CLEAN_BIT((TIM3->CCMR2),(7 << 4));
-            SET_BIT((TIM3->CCMR2),(6 << 4));//设置PWM模式1
-            SET_BIT((TIM3->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM3->CCMR2),(6 << 4));  //设置PWM模式1
+            SET_BIT((TIM3->CCMR2),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH4)
         {
             CLEAN_BIT((TIM3->CCMR2),(7 << 12));
-            SET_BIT((TIM3->CCMR2),(6 << 12));//设置PWM模式1
-            SET_BIT((TIM3->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM3->CCMR2),(6 << 12)); //设置PWM模式1
+            SET_BIT((TIM3->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }   
     }
     if (tim_type == TIM4)
     {
-        TIM4->PSC = 71;//设置预分频器的值，当前频率：1MHZ
-        CLEAN_BIT((TIM4->CR1),(3 << 5));//设置边沿对齐模式
-        CLEAN_BIT((TIM4->CR1),(1 << 4));//设置计数器向上计数
-        CLEAN_BIT((TIM4->CR1),(1 << 1));//允许UEV事件
-        SET_BIT((TIM4->CR1),(1 << 2));//设置更新源为计数器溢出
-        SET_BIT((TIM4->CR1),(1 << 7));//开启自动重装载预装载
-        SET_BIT((TIM4->EGR),(1));//产生更新事件
-        SET_BIT((TIM4->CR1),(1));//使能计数器
+        TIM4->PSC = 71;                  //设置预分频器的值，当前频率：1MHZ
+        CLEAN_BIT((TIM4->CR1),(3 << 5)); //设置边沿对齐模式
+        CLEAN_BIT((TIM4->CR1),(1 << 4)); //设置计数器向上计数
+        CLEAN_BIT((TIM4->CR1),(1 << 1)); //允许UEV事件
+        SET_BIT((TIM4->CR1),(1 << 2));   //设置更新源为计数器溢出
+        SET_BIT((TIM4->CR1),(1 << 7));   //开启自动重装载预装载
+        SET_BIT((TIM4->EGR),(1));        //产生更新事件
+        SET_BIT((TIM4->CR1),(1));        //使能计数器
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM4->CCMR1),(7 << 4));
-            SET_BIT((TIM4->CCMR1),(6 << 4));//设置PWM模式1
-            SET_BIT((TIM4->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM4->CCMR1),(6 << 4));  //设置PWM模式1
+            SET_BIT((TIM4->CCMR1),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH2)
         {
             CLEAN_BIT((TIM4->CCMR1),(7 << 12));
-            SET_BIT((TIM4->CCMR1),(6 << 12));//设置PWM模式1
-            SET_BIT((TIM4->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM4->CCMR1),(6 << 12)); //设置PWM模式1
+            SET_BIT((TIM4->CCMR1),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH3)
         {
             CLEAN_BIT((TIM4->CCMR2),(7 << 4));
-            SET_BIT((TIM4->CCMR2),(6 << 4));//设置PWM模式1
-            SET_BIT((TIM4->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM4->CCMR2),(6 << 4));  //设置PWM模式1
+            SET_BIT((TIM4->CCMR2),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH4)
         {
             CLEAN_BIT((TIM4->CCMR2),(7 << 12));
-            SET_BIT((TIM4->CCMR2),(6 << 12));//设置PWM模式1
-            SET_BIT((TIM4->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM4->CCMR2),(6 << 12)); //设置PWM模式1
+            SET_BIT((TIM4->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }   
     }
     if (tim_type == TIM5)
     {
-        TIM5->PSC = 71;//设置预分频器的值，当前频率：1MHZ
-        CLEAN_BIT((TIM5->CR1),(3 << 5));//设置边沿对齐模式
-        CLEAN_BIT((TIM5->CR1),(1 << 4));//设置计数器向上计数
-        CLEAN_BIT((TIM5->CR1),(1 << 1));//允许UEV事件
-        SET_BIT((TIM5->CR1),(1 << 2));//设置更新源为计数器溢出
-        SET_BIT((TIM5->CR1),(1 << 7));//开启自动重装载预装载
-        SET_BIT((TIM5->EGR),(1));//产生更新事件
-        SET_BIT((TIM5->CR1),(1));//使能计数器
+        TIM5->PSC = 71;                  //设置预分频器的值，当前频率：1MHZ
+        CLEAN_BIT((TIM5->CR1),(3 << 5)); //设置边沿对齐模式
+        CLEAN_BIT((TIM5->CR1),(1 << 4)); //设置计数器向上计数
+        CLEAN_BIT((TIM5->CR1),(1 << 1)); //允许UEV事件
+        SET_BIT((TIM5->CR1),(1 << 2));   //设置更新源为计数器溢出
+        SET_BIT((TIM5->CR1),(1 << 7));   //开启自动重装载预装载
+        SET_BIT((TIM5->EGR),(1));        //产生更新事件
+        SET_BIT((TIM5->CR1),(1));        //使能计数器
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM5->CCMR1),(7 << 4));
-            SET_BIT((TIM5->CCMR1),(6 << 4));//设置PWM模式1
-            SET_BIT((TIM5->CCMR1),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM5->CCMR1),(6 << 4));  //设置PWM模式1
+            SET_BIT((TIM5->CCMR1),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH2)
         {
             CLEAN_BIT((TIM5->CCMR1),(7 << 12));
-            SET_BIT((TIM5->CCMR1),(6 << 12));//设置PWM模式1
-            SET_BIT((TIM5->CCMR1),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM5->CCMR1),(6 << 12)); //设置PWM模式1
+            SET_BIT((TIM5->CCMR1),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH3)
         {
             CLEAN_BIT((TIM5->CCMR2),(7 << 4));
-            SET_BIT((TIM5->CCMR2),(6 << 4));//设置PWM模式1
-            SET_BIT((TIM5->CCMR2),(1 << 3));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM5->CCMR2),(6 << 4));  //设置PWM模式1
+            SET_BIT((TIM5->CCMR2),(1 << 3));  //开启TIMx_CCR1寄存器预装载功能
         }
         if (channel_num == CH4)
         {
             CLEAN_BIT((TIM5->CCMR2),(7 << 12));
-            SET_BIT((TIM5->CCMR2),(6 << 12));//设置PWM模式1
-            SET_BIT((TIM5->CCMR2),(1 << 11));//开启TIMx_CCR1寄存器预装载功能
+            SET_BIT((TIM5->CCMR2),(6 << 12)); //设置PWM模式1
+            SET_BIT((TIM5->CCMR2),(1 << 11)); //开启TIMx_CCR1寄存器预装载功能
         }   
     }
 }
@@ -485,8 +487,8 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         return;
     }
     int arr_num = 1000000 / frequency;
-    TIMx->ARR = arr_num - 1;//写入输出频率值，时钟频率1MHZ
-    int ccr_num = duty_cycle * arr_num / 100;//占空比值 
+    TIMx->ARR = arr_num - 1;                  //写入输出频率值，时钟频率1MHZ
+    int ccr_num = duty_cycle * arr_num / 100; //占空比值 
     if (channel_num == CH1)
     { 
         TIMx->CCR1 = ccr_num;
@@ -498,7 +500,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         {
             SET_BIT((TIMx->CCER),(1 << 1));
         }
-        SET_BIT((TIMx->CCER),(1));//输出使能
+        SET_BIT((TIMx->CCER),(1));       //输出使能
     }
     if (channel_num == CH2)
     {
@@ -511,7 +513,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         {
             SET_BIT((TIMx->CCER),(1 << 5));
         }
-        SET_BIT((TIMx->CCER),(1 << 4));//输出使能
+        SET_BIT((TIMx->CCER),(1 << 4));  //输出使能
     }
     if (channel_num == CH3)
     {
@@ -524,7 +526,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         {
             SET_BIT((TIMx->CCER),(1 << 9));
         }
-        SET_BIT((TIMx->CCER),(1 << 8));//输出使能
+        SET_BIT((TIMx->CCER),(1 << 8));  //输出使能
     }
     if (channel_num == CH4)
     {
@@ -537,7 +539,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         {
             SET_BIT((TIMx->CCER),(1 << 13));
         }
-        SET_BIT((TIMx->CCER),(1 << 12));//输出使能
+        SET_BIT((TIMx->CCER),(1 << 12)); //输出使能
     }
 }
 
@@ -599,7 +601,7 @@ void i2c_send (unsigned char send_num)
     SDA_UP; 
     delay_us(delay_normal);
     SCK_UP;   
-    delay_us(delay_normal);//ACK应答周期
+    delay_us(delay_normal); //ACK应答周期
     SCK_DOWN;
     delay_us(delay_normal);
 }
@@ -640,10 +642,10 @@ void data_write(unsigned char data)
 
 void oled_clean(void)
 {
-    double_cmd_write(0x21,0x00);//Column Start 0
-    cmd_write(0x7F);//Column End 127
-    double_cmd_write(0x22,0x00);//Page Start 0
-    cmd_write(0x07);//Page End 7   
+    double_cmd_write(0x21,0x00); //Column Start 0
+    cmd_write(0x7F);             //Column End 127
+    double_cmd_write(0x22,0x00); //Page Start 0
+    cmd_write(0x07);             //Page End 7   
     i2c_start();
     i2c_send(0x78);       
     i2c_send(0x40);
@@ -657,31 +659,31 @@ void oled_clean(void)
 void oled_init(void)
 {
     delay_us(delay_init);
-    cmd_write(0xAE);//关闭屏幕
-    double_cmd_write(0xA8,0x3F);//Set MUX Ratio
-    double_cmd_write(0xD3,0x00);//Set Display Offset
-    cmd_write(0x40);//Set Display Start Line
-    double_cmd_write(0x20,0x00);//设置垂直寻址
-    cmd_write(0xA1);//Set Segment re-map 
-    cmd_write(0xC8);//Set COM Output Scan Direction 
-    double_cmd_write(0xDA,0x12);//Set COM Pins hardware cofiguration
-    double_cmd_write(0x81,0x7F);//Set Contrast Control
-    cmd_write(0xA4);//Disable Entire Display on 
-    cmd_write(0xA6);//Set Normal Display
-    double_cmd_write(0xD5,0x80);//Set Osc Frequency
-    double_cmd_write(0xD9,0xF1);//Set Pre-charge Period
-    double_cmd_write(0xDB,0x30);//Set VCOMH Deselete Level
-    double_cmd_write(0x8D,0x14);//Enable Charge Pump Regulato
+    cmd_write(0xAE);             //关闭屏幕
+    double_cmd_write(0xA8,0x3F); //Set MUX Ratio
+    double_cmd_write(0xD3,0x00); //Set Display Offset
+    cmd_write(0x40);             //Set Display Start Line
+    double_cmd_write(0x20,0x00); //设置垂直寻址
+    cmd_write(0xA1);             //Set Segment re-map 
+    cmd_write(0xC8);             //Set COM Output Scan Direction 
+    double_cmd_write(0xDA,0x12); //Set COM Pins hardware cofiguration
+    double_cmd_write(0x81,0x7F); //Set Contrast Control
+    cmd_write(0xA4);             //Disable Entire Display on 
+    cmd_write(0xA6);             //Set Normal Display
+    double_cmd_write(0xD5,0x80); //Set Osc Frequency
+    double_cmd_write(0xD9,0xF1); //Set Pre-charge Period
+    double_cmd_write(0xDB,0x30); //Set VCOMH Deselete Level
+    double_cmd_write(0x8D,0x14); //Enable Charge Pump Regulato
     oled_clean();
-    cmd_write(0xAF);//Display On
+    cmd_write(0xAF);             //Display On
 }
 
 void oled_display(const unsigned char *display_num)
 {
-    double_cmd_write(0x21,0x00);//Column Start 0
-    cmd_write(0x7F);//Column End 127
-    double_cmd_write(0x22,0x00);//Page Start 0
-    cmd_write(0x07);//Page End 7   
+    double_cmd_write(0x21,0x00); //Column Start 0
+    cmd_write(0x7F);             //Column End 127
+    double_cmd_write(0x22,0x00); //Page Start 0
+    cmd_write(0x07);             //Page End 7   
     i2c_start();
     i2c_send(0x78);       
     i2c_send(0x40);
