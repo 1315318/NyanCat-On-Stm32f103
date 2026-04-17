@@ -167,174 +167,60 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
     }
     int arr_num = 1000000 / frequency;
     int ccr_num = duty_cycle * arr_num / 100;
-    if (tim_type == TIM2)
-    {
-        TIM2->ARR = arr_num - 1;             //写入输出频率值，时钟频率1MHZ
-        if (channel_num == CH1)
-        { 
-            TIM2->CCR1 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM2->CCER),(1 << 1));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM2->CCER),(1 << 1));
-            }
-            SET_BIT((TIM2->CCER),(1));       //输出使能
-        }
-        if (channel_num == CH2)
+    tim_type->ARR = arr_num - 1;             //写入输出频率值，时钟频率1MHZ
+    if (channel_num == CH1)
+    { 
+        tim_type->CCR1 = ccr_num;
+        if (mode == HIGH)
         {
-            TIM2->CCR2 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM2->CCER),(1 << 5));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM2->CCER),(1 << 5));
-            }
-            SET_BIT((TIM2->CCER),(1 << 4));  //输出使能
+            CLEAN_BIT((tim_type->CCER),(1 << 1));
         }
-        if (channel_num == CH3)
+        if (mode == LOW)
         {
-            TIM2->CCR3 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM2->CCER),(1 << 9));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM2->CCER),(1 << 9));
-            }
-            SET_BIT((TIM2->CCER),(1 << 8));  //输出使能
+            SET_BIT((tim_type->CCER),(1 << 1));
         }
-        if (channel_num == CH4)
-        {
-            TIM2->CCR4 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM2->CCER),(1 << 13));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM2->CCER),(1 << 13));
-            }
-            SET_BIT((TIM2->CCER),(1 << 12)); //输出使能
-        }
+        SET_BIT((tim_type->CCER),(1));       //输出使能
     }
-    if (tim_type == TIM3)
+    if (channel_num == CH2)
     {
-        TIM3->ARR = arr_num - 1;             //写入输出频率值，时钟频率1MHZ
-        if (channel_num == CH1)
-        { 
-            TIM3->CCR1 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM3->CCER),(1 << 1));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM3->CCER),(1 << 1));
-            }
-            SET_BIT((TIM3->CCER),(1));       //输出使能
-        }
-        if (channel_num == CH2)
+        tim_type->CCR2 = ccr_num;
+        if (mode == HIGH)
         {
-            TIM3->CCR2 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM3->CCER),(1 << 5));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM3->CCER),(1 << 5));
-            }
-            SET_BIT((TIM3->CCER),(1 << 4));  //输出使能
+            CLEAN_BIT((tim_type->CCER),(1 << 5));
         }
-        if (channel_num == CH3)
+        if (mode == LOW)
         {
-            TIM3->CCR3 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM3->CCER),(1 << 9));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM3->CCER),(1 << 9));
-            }
-            SET_BIT((TIM3->CCER),(1 << 8));  //输出使能
+            SET_BIT((tim_type->CCER),(1 << 5));
         }
-        if (channel_num == CH4)
-        {
-            TIM3->CCR4 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM3->CCER),(1 << 13));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM3->CCER),(1 << 13));
-            }
-            SET_BIT((TIM3->CCER),(1 << 12)); //输出使能
-        }
+        SET_BIT((tim_type->CCER),(1 << 4));  //输出使能
     }
-    if (tim_type == TIM4)
+    if (channel_num == CH3)
     {
-        TIM4->ARR = arr_num - 1;             //写入输出频率值，时钟频率1MHZ
-        if (channel_num == CH1)
-        { 
-            TIM4->CCR1 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM4->CCER),(1 << 1));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM4->CCER),(1 << 1));
-            }
-            SET_BIT((TIM4->CCER),(1));       //输出使能
-        }
-        if (channel_num == CH2)
+        tim_type->CCR3 = ccr_num;
+        if (mode == HIGH)
         {
-            TIM4->CCR2 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM4->CCER),(1 << 5));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM4->CCER),(1 << 5));
-            }
-            SET_BIT((TIM4->CCER),(1 << 4));  //输出使能
+            CLEAN_BIT((tim_type->CCER),(1 << 9));
         }
-        if (channel_num == CH3)
+        if (mode == LOW)
         {
-            TIM4->CCR3 = ccr_num;
-            if (mode == HIGH)
-            {
-                CLEAN_BIT((TIM4->CCER),(1 << 9));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM4->CCER),(1 << 9));
-            }
-            SET_BIT((TIM4->CCER),(1 << 8));  //输出使能
+            SET_BIT((tim_type->CCER),(1 << 9));
         }
-        if (channel_num == CH4)
+        SET_BIT((tim_type->CCER),(1 << 8));  //输出使能
+    }
+    if (channel_num == CH4)
+    {
+        tim_type->CCR4 = ccr_num;
+        if (mode == HIGH)
         {
-            TIM4->CCR4 = ccr_num;
-            if (mode == HIGH)
-            {       
-                CLEAN_BIT((TIM4->CCER),(1 << 13));
-            }
-            if (mode == LOW)
-            {
-                SET_BIT((TIM4->CCER),(1 << 13));
-            }
-            SET_BIT((TIM4->CCER),(1 << 12)); //输出使能
+            CLEAN_BIT((tim_type->CCER),(1 << 13));
         }
-    }   
+        if (mode == LOW)
+        {
+            SET_BIT((tim_type->CCER),(1 << 13));
+        }
+        SET_BIT((tim_type->CCER),(1 << 12)); //输出使能
+    }
+    SET_BIT((tim_type->EGR),(1));            //产生更新事件
 }
 
 #endif
