@@ -35,19 +35,27 @@ struct TIMx
 #define CH3 3
 #define CH4 4
 
-void init_pwm(volatile struct TIMx* tim_type,int channel_num)
+void enr_pwm(volatile struct TIMx* tim_type)
 {
     if (tim_type == TIM2)
     {
-        SET_BIT((RCC->APB1ENR),(1));     //TIM2使能
-        TIM2->PSC = 71;                  //设置预分频器的值，当前频率：1MHZ
-        CLEAN_BIT((TIM2->CR1),(3 << 5)); //设置边沿对齐模式
-        CLEAN_BIT((TIM2->CR1),(1 << 4)); //设置计数器向上计数
-        CLEAN_BIT((TIM2->CR1),(1 << 1)); //允许UEV事件
-        SET_BIT((TIM2->CR1),(1 << 2));   //设置更新源为计数器溢出
-        SET_BIT((TIM2->CR1),(1 << 7));   //开启自动重装载预装载
-        SET_BIT((TIM2->EGR),(1));        //产生更新事件
-        SET_BIT((TIM2->CR1),(1));        //使能计数器
+        SET_BIT((RCC->APB1ENR),(1 << 0)); //TIM2使能
+    }
+    if (tim_type == TIM3)
+    {
+        SET_BIT((RCC->APB1ENR),(1 << 1)); //TIM3使能
+    }
+    if (tim_type == TIM4)
+    {
+        SET_BIT((RCC->APB1ENR),(1 << 2)); //TIM4使能
+    }
+}
+
+void init_pwm(volatile struct TIMx* tim_type,int channel_num)
+{
+ 
+    if (tim_type == TIM2)
+    {
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM2->CCMR1),(7 << 4));
@@ -79,15 +87,6 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
     }
     if (tim_type == TIM3)
     {
-        SET_BIT((RCC->APB1ENR),(1 << 1)); //TIM3使能
-        TIM3->PSC = 71;                   //设置预分频器的值，当前频率：1MHZ
-        CLEAN_BIT((TIM3->CR1),(3 << 5));  //设置边沿对齐模式
-        CLEAN_BIT((TIM3->CR1),(1 << 4));  //设置计数器向上计数
-        CLEAN_BIT((TIM3->CR1),(1 << 1));  //允许UEV事件
-        SET_BIT((TIM3->CR1),(1 << 2));    //设置更新源为计数器溢出
-        SET_BIT((TIM3->CR1),(1 << 7));    //开启自动重装载预装载
-        SET_BIT((TIM3->EGR),(1));         //产生更新事件
-        SET_BIT((TIM3->CR1),(1));         //使能计数器
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM3->CCMR1),(7 << 4));
@@ -119,15 +118,6 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
     }
     if (tim_type == TIM4)
     {
-        SET_BIT((RCC->APB1ENR),(1 << 2)); //TIM4使能
-        TIM4->PSC = 71;                   //设置预分频器的值，当前频率：1MHZ
-        CLEAN_BIT((TIM4->CR1),(3 << 5));  //设置边沿对齐模式
-        CLEAN_BIT((TIM4->CR1),(1 << 4));  //设置计数器向上计数
-        CLEAN_BIT((TIM4->CR1),(1 << 1));  //允许UEV事件
-        SET_BIT((TIM4->CR1),(1 << 2));    //设置更新源为计数器溢出
-        SET_BIT((TIM4->CR1),(1 << 7));    //开启自动重装载预装载
-        SET_BIT((TIM4->EGR),(1));         //产生更新事件
-        SET_BIT((TIM4->CR1),(1));         //使能计数器
         if (channel_num == CH1)
         { 
             CLEAN_BIT((TIM4->CCMR1),(7 << 4));
@@ -157,6 +147,14 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
             init_gpio(GPIOB,9,GPIO_MODE_AFPP); //设置PB9引脚为复用推挽输出模式
         }   
     }
+    tim_type->PSC = 71;                  //设置预分频器的值，当前频率：1MHZ
+    CLEAN_BIT((tim_type->CR1),(3 << 5)); //设置边沿对齐模式
+    CLEAN_BIT((tim_type->CR1),(1 << 4)); //设置计数器向上计数
+    CLEAN_BIT((tim_type->CR1),(1 << 1)); //允许UEV事件
+    SET_BIT((tim_type->CR1),(1 << 2));   //设置更新源为计数器溢出
+    SET_BIT((tim_type->CR1),(1 << 7));   //开启自动重装载预装载
+    SET_BIT((tim_type->EGR),(1));        //产生更新事件
+    SET_BIT((tim_type->CR1),(1));        //使能计数器
 }
 
 void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequency,int duty_cycle)
