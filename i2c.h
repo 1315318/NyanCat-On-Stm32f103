@@ -13,8 +13,8 @@
 #define ACK_OFF 1
 
 //定义延时宏对应不同延时需求
-#define delay_normal 5
-#define delay_init   100000
+#define delay_normal 1
+#define delay_init   100
 
 void i2c_start(void)
 {
@@ -116,7 +116,7 @@ void oled_clean(void)
 
 void oled_init(void)
 {
-    delay_us(delay_init);
+    delay_ms(delay_init);
     cmd_write(0xAE);             //关闭屏幕
     double_cmd_write(0xA8,0x3F); //Set MUX Ratio
     double_cmd_write(0xD3,0x00); //Set Display Offset

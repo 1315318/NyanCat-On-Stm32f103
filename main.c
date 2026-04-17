@@ -22,8 +22,8 @@ void __libc_init_array(void) {}
 #define GPIOC_CRH   (*(volatile unsigned int*)0x40011004)
 #define GPIOC_ODR   (*(volatile unsigned int*)0x4001100C)
 
-#define delay_change    1000000 //切换延时
-#define delay_animation 80000   //动画延时
+#define delay_change    1000  //切换延时
+#define delay_animation 10   //动画延时
 
 int main(void) 
 {
@@ -39,56 +39,56 @@ int main(void)
     //OLED初始化
     oled_init();
     oled_display(nyan_cat);
-    delay_us(delay_change);
+    delay_ms(delay_change);
     while (1)
     {
         oled_display(nyancat1);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat2);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat3);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat4);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat5);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat6);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat7);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat8);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat9);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat10);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat11);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat12);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat13);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat14);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat15);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat16);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat17);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat18);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat19);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat20);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat21);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat22);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat23);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
         oled_display(nyancat24);
-        delay_us(delay_animation);
+        delay_ms(delay_animation);
     }
 }
