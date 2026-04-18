@@ -36,6 +36,8 @@ struct TIMx
 #define CH3 3
 #define CH4 4
 
+#define AUDIO_SIZE 26702
+
 void enr_pwm(volatile struct TIMx* tim_type)
 {
     if (tim_type == TIM2)
@@ -222,14 +224,13 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
     SET_BIT((tim_type->EGR),(1));            //产生更新事件
 }
 
-#define PCM_SIZE 26702
 void audio_play(void)
 {
     enr_pwm(TIM2);
     init_pwm(TIM2,CH1,0);
     TIM2->ARR = 255;
     SET_BIT((TIM2->CCER),(1 << 0)); //输出使能
-    for(int i = 0;i < PCM_SIZE;i++)
+    for(int i = 0;i < AUDIO_SIZE;i++)
     {
         TIM2->CCR1 = nyancat_audio[i];
         delay_us(125);
