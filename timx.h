@@ -16,6 +16,7 @@ struct TIMx
     volatile unsigned int CNT;
     volatile unsigned int PSC;
     volatile unsigned int ARR;
+    volatile unsigned int RESERVED; //保留
     volatile unsigned int CCR1;
     volatile unsigned int CCR2;
     volatile unsigned int CCR3;
@@ -51,7 +52,7 @@ void enr_pwm(volatile struct TIMx* tim_type)
     }
 }
 
-void init_pwm(volatile struct TIMx* tim_type,int channel_num)
+void init_pwm(volatile struct TIMx* tim_type,int channel_num,int psc)
 {
  
     if (tim_type == TIM2)
@@ -147,7 +148,7 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num)
             init_gpio(GPIOB,9,GPIO_MODE_AFPP); //设置PB9引脚为复用推挽输出模式
         }   
     }
-    tim_type->PSC = 71;                  //设置预分频器的值，当前频率：1MHZ
+    tim_type->PSC = psc;                 //设置预分频器的值
     CLEAN_BIT((tim_type->CR1),(3 << 5)); //设置边沿对齐模式
     CLEAN_BIT((tim_type->CR1),(1 << 4)); //设置计数器向上计数
     CLEAN_BIT((tim_type->CR1),(1 << 1)); //允许UEV事件
@@ -177,7 +178,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         {
             SET_BIT((tim_type->CCER),(1 << 1));
         }
-        SET_BIT((tim_type->CCER),(1));       //输出使能
+        SET_BIT((tim_type->CCER),(1 << 0));  //输出使能
     }
     if (channel_num == CH2)
     {
@@ -219,6 +220,20 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         SET_BIT((tim_type->CCER),(1 << 12)); //输出使能
     }
     SET_BIT((tim_type->EGR),(1));            //产生更新事件
+}
+
+#define PCM_SIZE 26702
+void audio_play(void)
+{
+    enr_pwm(TIM2);
+    init_pwm(TIM2,CH1,0);
+    TIM2->ARR = 255;
+    SET_BIT((TIM2->CCER),(1 << 0)); //输出使能
+    for(int i = 0;i < PCM_SIZE;i++)
+    {
+        TIM2->CCR1 = nyancat_audio[i];
+        delay_us(125);
+    }  
 }
 
 #endif

@@ -11,4 +11,7 @@
 #define LOW  0 
 #define HIGH 1
 
+//骗过链接器
+void __libc_init_array(void) {}
+
 #endif
