@@ -32,6 +32,7 @@ int main(void)
     CLEAN_BIT((GPIOC_CRH),(0xF << 20));
     SET_BIT((GPIOC_CRH),(0x3 << 20));
     //GPIO端口初始化
+    enr_gpio(GPIOA);
     init_gpio(GPIOA,5,GPIO_MODE_OL);
     init_gpio(GPIOA,10,GPIO_MODE_OL);
     set_gpio(GPIOA,5,HIGH);

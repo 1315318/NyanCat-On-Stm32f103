@@ -27,142 +27,55 @@ struct GPIOx
 #define GPIO_MODE_OL   1 //通用开漏输出模式
 #define GPIO_MODE_AFPP 2 //复用推挽输出模式
 
-//gpio_type为引脚类型，pin_num为引脚号，范围0～15，mode为输出模式
-void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)
+void enr_gpio(volatile struct GPIOx* gpio_type)
 {
     if (gpio_type == GPIOA)
     {
-        if (pin_num != 13 && pin_num != 14 && pin_num != 15)
-        {
-            SET_BIT((RCC->APB2ENR),(1 << 2)); 
-            if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
-            {
-                if (pin_num >=0 && pin_num <= 7)
-                {
-                    CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
-                    SET_BIT((GPIOA->CRL),(3 << (pin_num * 4)));
-                }
-                if (pin_num >= 8 && pin_num <= 15)
-                {
-                    CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
-                    SET_BIT((GPIOA->CRH),(3 << ((pin_num - 8) * 4)));
-                }
-            }
-            if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
-            {
-                if (pin_num >=0 && pin_num <= 7)
-                {
-                    CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
-                    SET_BIT((GPIOA->CRL),(7 << (pin_num * 4)));
-                }
-                if (pin_num >= 8 && pin_num <= 15)
-                {
-                    CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
-                    SET_BIT((GPIOA->CRH),(7 << ((pin_num - 8) * 4)));
-                }
-            }
-            if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
-            {
-                if (pin_num >=0 && pin_num <= 7)
-                {
-                    CLEAN_BIT((GPIOA->CRL),(0xF << (pin_num * 4)));
-                    SET_BIT((GPIOA->CRL),(0xB << (pin_num * 4)));
-                }
-                if (pin_num >= 8 && pin_num <= 15)
-                {
-                    CLEAN_BIT((GPIOA->CRH),(0xF << ((pin_num - 8) * 4)));
-                    SET_BIT((GPIOA->CRH),(0xB << ((pin_num - 8) * 4)));
-                }
-            }
-        }
+        SET_BIT((RCC->APB2ENR),(1 << 2)); 
     }
     if (gpio_type == GPIOB)
     {
-        if (pin_num != 3 && pin_num != 4)
-        {
-            SET_BIT((RCC->APB2ENR),(1 << 3)); 
-            if (mode == GPIO_MODE_PP)  //通用推挽输出,50MHZ
-            {
-                if (pin_num >=0 && pin_num <= 7)
-                {
-                    CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
-                    SET_BIT((GPIOB->CRL),(3 << (pin_num * 4)));
-                }
-                if (pin_num >= 8 && pin_num <= 15)
-                {
-                    CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
-                    SET_BIT((GPIOB->CRH),(3 << ((pin_num - 8) * 4)));
-                }
-            }
-            if (mode == GPIO_MODE_OL)  //通用开漏输出,50MHZ
-            {
-                if (pin_num >=0 && pin_num <= 7)
-                {
-                    CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
-                    SET_BIT((GPIOB->CRL),(7 << (pin_num * 4)));
-                }
-                if (pin_num >= 8 && pin_num <= 15)
-                {
-                    CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
-                    SET_BIT((GPIOB->CRH),(7 << ((pin_num - 8) * 4)));
-                }
-            }
-            if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
-            {
-                if (pin_num >=0 && pin_num <= 7)
-                {
-                    CLEAN_BIT((GPIOB->CRL),(0xF << (pin_num * 4)));
-                    SET_BIT((GPIOB->CRL),(0xB << (pin_num * 4)));
-                }
-                if (pin_num >= 8 && pin_num <= 15)
-                {
-                    CLEAN_BIT((GPIOB->CRH),(0xF << ((pin_num - 8) * 4)));
-                    SET_BIT((GPIOB->CRH),(0xB << ((pin_num - 8) * 4)));
-                }
-            }
-        }
+        SET_BIT((RCC->APB2ENR),(1 << 3)); 
     }
     if (gpio_type == GPIOC)
     {
         SET_BIT((RCC->APB2ENR),(1 << 4)); 
+    }
+}
+
+//gpio_type为引脚类型，pin_num为引脚号，范围0～15，mode为输出模式
+void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)
+{
+    if (pin_num >=0 && pin_num <= 7)
+    {
+        CLEAN_BIT((gpio_type->CRL),(0xF << (pin_num * 4)));
         if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
         {
-            if (pin_num >=0 && pin_num <= 7)
-            {
-                CLEAN_BIT((GPIOC->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOC->CRL),(3 << (pin_num * 4)));
-            }
-            if (pin_num >= 8 && pin_num <= 15)
-            {
-                CLEAN_BIT((GPIOC->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOC->CRH),(3 << ((pin_num - 8) * 4)));
-            }
+            SET_BIT((gpio_type->CRL),(0x3 << (pin_num * 4)));
         }
         if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
         {
-            if (pin_num >=0 && pin_num <= 7)
-            {
-                CLEAN_BIT((GPIOC->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOC->CRL),(7 << (pin_num * 4)));
-            }
-            if (pin_num >= 8 && pin_num <= 15)
-            {
-                CLEAN_BIT((GPIOC->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOC->CRH),(7 << ((pin_num - 8) * 4)));
-            }
+            SET_BIT((gpio_type->CRL),(0x7 << (pin_num * 4)));
         }
         if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
         {
-            if (pin_num >=0 && pin_num <= 7)
-            {
-                CLEAN_BIT((GPIOC->CRL),(0xF << (pin_num * 4)));
-                SET_BIT((GPIOC->CRL),(0xB << (pin_num * 4)));
-            }
-            if (pin_num >= 8 && pin_num <= 15)
-            {
-                CLEAN_BIT((GPIOC->CRH),(0xF << ((pin_num - 8) * 4)));
-                SET_BIT((GPIOC->CRH),(0xB << ((pin_num - 8) * 4)));
-            }
+            SET_BIT((gpio_type->CRL),(0xB << (pin_num * 4)));
+        }
+    }
+    if (pin_num >= 8 && pin_num <= 15)
+    {
+        CLEAN_BIT((gpio_type->CRH),(0xF << ((pin_num - 8) * 4)));
+        if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
+        {
+            SET_BIT((gpio_type->CRH),(0x3 << ((pin_num - 8) * 4)));
+        }
+        if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
+        {
+            SET_BIT((gpio_type->CRH),(0x7 << ((pin_num - 8) * 4)));
+        }
+        if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
+        {
+            SET_BIT((gpio_type->CRH),(0xB << ((pin_num - 8) * 4)));
         }
     }
 }
