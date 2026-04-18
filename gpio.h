@@ -83,39 +83,14 @@ void init_gpio(volatile struct GPIOx* gpio_type,int pin_num,int mode)
 //gpio_type为引脚类型，pin_num为引脚号，范围0～15
 void set_gpio(volatile struct GPIOx* gpio_type,int pin_num,int level)
 {
-    if (gpio_type == GPIOA)
+    if (level == LOW)
     {
-        if (level == LOW)
-        {
-            BSRR_CLEAN((GPIOA->BSRR),(1 << pin_num));
-        }
-        if (level == HIGH)
-        {
-            BSRR_SET((GPIOA->BSRR),(1 << pin_num));
-        }        
+        BSRR_CLEAN((gpio_type->BSRR),(1 << pin_num));
     }
-    if (gpio_type == GPIOB)
+    if (level == HIGH)
     {
-        if (level == LOW)
-        {
-            BSRR_CLEAN((GPIOB->BSRR),(1 << pin_num));
-        }
-        if (level == HIGH)
-        {
-            BSRR_SET((GPIOB->BSRR),(1 << pin_num));
-        }        
-    }
-    if (gpio_type == GPIOC)
-    {
-        if (level == LOW)
-        {
-            BSRR_CLEAN((GPIOC->BSRR),(1 << pin_num));
-        }
-        if (level == HIGH)
-        {
-            BSRR_SET((GPIOC->BSRR),(1 << pin_num));
-        }        
-    }
+        BSRR_SET((gpio_type->BSRR),(1 << pin_num));
+    }  
 }
 
 #endif 
