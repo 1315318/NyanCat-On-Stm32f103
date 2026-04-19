@@ -32,10 +32,10 @@ int main(void)
     SET_BIT((GPIOC_CRH), (0x3 << 20));
     //GPIO端口初始化
     enr_gpio(GPIOA);
-    init_gpio(GPIOA, 5, GPIO_MODE_OL);
-    init_gpio(GPIOA, 10, GPIO_MODE_OL);
-    set_gpio(GPIOA, 5, HIGH);
-    set_gpio(GPIOA, 10, HIGH);
+    init_gpio(GPIOA, GPIO_CH5, GPIO_MODE_OL);
+    init_gpio(GPIOA, GPIO_CH10, GPIO_MODE_OL);
+    set_gpio(GPIOA, GPIO_CH5, HIGH);
+    set_gpio(GPIOA, GPIO_CH10, HIGH);
     //OLED初始化
     oled_init();
     oled_display(nyan_cat);
@@ -47,8 +47,8 @@ int main(void)
     {
         for (int i = 0; i < 24; i++)
         {
-        oled_display(nyancats[i]);
-        delay_ms(delay_animation);
+            oled_display(nyancats[i]);
+            delay_ms(delay_animation);
         }
     }
 }
