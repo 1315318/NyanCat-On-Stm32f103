@@ -7,6 +7,7 @@ struct DMA_CHANNEL
     volatile unsigned int CNDTR;
     volatile unsigned int CPAR;
     volatile unsigned int CMAR;
+    volatile unsigned int RESERVED; //保留
 };
 
 struct DMA
@@ -50,11 +51,11 @@ struct DMA
 
 //定义循环模式开关
 #define CIRC_OFF 0 //不执行循环操作
-#define CIRE_ON  1 //执行循环操作
+#define CIRC_ON  1 //执行循环操作
 
 //定义数据传输方向
 #define DIR_PSI 0 //从外设读
-#define DMA_MSI 1 //从存储器读
+#define DIR_MSI 1 //从存储器读
 
 void enr_dma(void)
 {
@@ -63,24 +64,24 @@ void enr_dma(void)
 
 void init_dma(int channel_num, int priority_level, int msize, int psize, int minc, int circ, int dir)
 {
-    CLEAN_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (0x3 << 12));
-    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (priority_level << 12)); //设置通道优先级
-    CLEAN_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (0x3 << 10)); 
-    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (msize << 10));          //设置存储器数据宽度
-    CLEAN_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (0x3 << 8));
-    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (psize << 8));          //设置外设数据宽度
-    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (minc << 7));           //设置存储器地址增量模式
-    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (dir << 4));            //设置数据传输方向
-    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (circ << 5));           //设置循环模式
+    CLEAN_BIT((DMA->dma_channel[channel_num].CCR), (0x3 << 12));
+    SET_BIT((DMA->dma_channel[channel_num].CCR), (priority_level << 12)); //设置通道优先级
+    CLEAN_BIT((DMA->dma_channel[channel_num].CCR), (0x3 << 10)); 
+    SET_BIT((DMA->dma_channel[channel_num].CCR), (msize << 10));          //设置存储器数据宽度
+    CLEAN_BIT((DMA->dma_channel[channel_num].CCR), (0x3 << 8));
+    SET_BIT((DMA->dma_channel[channel_num].CCR), (psize << 8));           //设置外设数据宽度
+    SET_BIT((DMA->dma_channel[channel_num].CCR), (minc << 7));            //设置存储器地址增量模式
+    SET_BIT((DMA->dma_channel[channel_num].CCR), (dir << 4));             //设置数据传输方向
+    SET_BIT((DMA->dma_channel[channel_num].CCR), (circ << 5));            //设置循环模式
 }
 
 //根据宏定义，传入的target_address是一个结构体指针，传参时需要做强制类型转换(unsigned int)
-void set_dma(int data_size, unsigned int target_address, unsgined int data_address) 
+void set_dma(int channel_num, int data_size, unsigned int target_address, unsigned int data_address) 
 {
-    DMA->DMA_CHANNEL[channel_num].CNDTR = data_size;        //数据传输数量，范围为0～65535
-    DMA->DMA_CHANNEL[channel_num].CPAR  = target_address;   //外设数据寄存器的基地址，作为数据传输的源或目标 
-    DMA->DMA_CHANNEL[channel_num].CMAR  = data_address;     //存储器地址，作为数据传输的源或目标
-    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (1 << 0)); //通道使能
+    DMA->dma_channel[channel_num].CNDTR = data_size;        //数据传输数量，范围为0～65535
+    DMA->dma_channel[channel_num].CPAR  = target_address;   //外设数据寄存器的基地址，作为数据传输的源或目标 
+    DMA->dma_channel[channel_num].CMAR  = data_address;     //存储器地址，作为数据传输的源或目标
+    SET_BIT((DMA->dma_channel[channel_num].CCR), (1 << 0)); //通道使能
 }
 
 #endif

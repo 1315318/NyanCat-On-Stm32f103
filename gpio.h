@@ -23,9 +23,9 @@ struct GPIOx
 #define BSRR_CLEAN(REG,BIT) ((REG) = ((BIT) << 16))
 
 //定义输出模式
-#define GPIO_MODE_PP   0 //通用推挽输出模式
-#define GPIO_MODE_OL   1 //通用开漏输出模式
-#define GPIO_MODE_AFPP 2 //复用推挽输出模式
+#define GPIO_MODE_PP   ((unsigned char) 0x3) //通用推挽输出模式，50MHZ
+#define GPIO_MODE_OL   ((unsigned char) 0x7) //通用开漏输出模式，50MHZ
+#define GPIO_MODE_AFPP ((unsigned char) 0xB) //复用推挽输出模式，50MHZ
 
 void enr_gpio(volatile struct GPIOx* gpio_type)
 {
@@ -49,34 +49,12 @@ void init_gpio(volatile struct GPIOx* gpio_type, int pin_num, int mode)
     if (pin_num >=0 && pin_num <= 7)
     {
         CLEAN_BIT((gpio_type->CRL), (0xF << (pin_num * 4)));
-        if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
-        {
-            SET_BIT((gpio_type->CRL), (0x3 << (pin_num * 4)));
-        }
-        if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
-        {
-            SET_BIT((gpio_type->CRL), (0x7 << (pin_num * 4)));
-        }
-        if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
-        {
-            SET_BIT((gpio_type->CRL), (0xB << (pin_num * 4)));
-        }
+        SET_BIT((gpio_type->CRL), (mode << (pin_num * 4)));
     }
     if (pin_num >= 8 && pin_num <= 15)
     {
         CLEAN_BIT((gpio_type->CRH), (0xF << ((pin_num - 8) * 4)));
-        if (mode == GPIO_MODE_PP)   //通用推挽输出,50MHZ
-        {
-            SET_BIT((gpio_type->CRH), (0x3 << ((pin_num - 8) * 4)));
-        }
-        if (mode == GPIO_MODE_OL)   //通用开漏输出,50MHZ
-        {
-            SET_BIT((gpio_type->CRH), (0x7 << ((pin_num - 8) * 4)));
-        }
-        if (mode == GPIO_MODE_AFPP) //复用推挽输出模式,50MHZ
-        {
-            SET_BIT((gpio_type->CRH), (0xB << ((pin_num - 8) * 4)));
-        }
+        SET_BIT((gpio_type->CRH), (mode << ((pin_num - 8) * 4)));
     }
 }
 

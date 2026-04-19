@@ -39,6 +39,8 @@ int main(void)
     oled_init();
     oled_display(nyan_cat);
     delay_ms(delay_change);
+    //音频播放函数调用
+    audio_play();
     //主循环
     while (1)
     {

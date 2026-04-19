@@ -27,7 +27,7 @@ void SystemInit(void)
     CLEAN_BIT((RCC->CFGR), (0xF << 18));
     SET_BIT((RCC->CFGR), (7 << 18));            //设置PLL倍频系数，当前值：9倍
     SET_BIT((RCC->CR), (1 << 24 ));             //PLL使能
-    while(READ_BIT((RCC->CR) (1 << 25)) == 0); //等待PLL锁定
+    while(READ_BIT((RCC->CR), (1 << 25)) == 0); //等待PLL锁定
     SET_BIT((RCC->CR), (1 << 19));              //CSS使能
     CLEAN_BIT((Flash->ACR), (7));
     SET_BIT((Flash->ACR), (2));                 //设置Flash延时
