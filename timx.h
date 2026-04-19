@@ -30,7 +30,7 @@ struct TIMx
 #define TIM3 ((volatile struct TIMx*)0x40000400)
 #define TIM4 ((volatile struct TIMx*)0x40000800)
 
-//定义TIMx通道宏
+//定义TIMx通道
 #define TIMx_CH1 1
 #define TIMx_CH2 2
 #define TIMx_CH3 3

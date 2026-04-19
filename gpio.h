@@ -22,7 +22,7 @@ struct GPIOx
 #define BSRR_SET(REG,BIT)   ((REG) = (BIT))
 #define BSRR_CLEAN(REG,BIT) ((REG) = ((BIT) << 16))
 
-//定义输出模式宏
+//定义输出模式
 #define GPIO_MODE_PP   0 //通用推挽输出模式
 #define GPIO_MODE_OL   1 //通用开漏输出模式
 #define GPIO_MODE_AFPP 2 //复用推挽输出模式
