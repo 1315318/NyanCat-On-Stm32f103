@@ -9,12 +9,12 @@
 
 //定义ack应答信号检测
 #define ACK_DETECTION READ_BIT((GPIOA->IDR), (1 << 10))
-#define ACK_ON  0
-#define ACK_OFF 1
+#define ACK_ON  ((unsigned char) 0)
+#define ACK_OFF ((unsigned char) 1)
 
 //定义延时宏对应不同延时需求
-#define delay_normal 1
-#define delay_init   100
+#define delay_normal ((unsigned char) 1)
+#define delay_init   ((unsigned char) 100)
 
 void i2c_start(void)
 {

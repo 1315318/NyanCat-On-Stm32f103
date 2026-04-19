@@ -13,7 +13,7 @@ struct SysTick
 //定义SysTick初地址
 #define SysTick ((volatile struct SysTick*) 0xE000E010)
 
-#define SysTick_CLK 9 //当前SysTick时钟：9MHZ
+#define SysTick_CLK ((unsigned char) 9) //当前SysTick时钟：9MHZ
 
 void systick_timing(int ticks) //读CAS寄存器第16位判断倒计时是否结束
 {

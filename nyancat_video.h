@@ -1676,4 +1676,12 @@ const unsigned char nyancat24 [] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
+const unsigned char* nyancats[] =
+{
+    nyancat1, nyancat2, nyancat3, nyancat4, nyancat5, nyancat6,
+    nyancat7, nyancat8, nyancat9, nyancat10, nyancat11, nyancat12, 
+    nyancat13, nyancat14, nyancat15, nyancat16, nyancat17, nyancat18,
+    nyancat19, nyancat20, nyancat21, nyancat22, nyancat23, nyancat24
+};
+
 #endif
