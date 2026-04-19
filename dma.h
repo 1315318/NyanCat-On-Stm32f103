@@ -17,7 +17,7 @@ struct DMA
 };
 
 //定义DMA初地址
-#define DMA ( (volatile struct DMA*) 0x40020000 ) 
+#define DMA ((volatile struct DMA*) 0x40020000) 
 
 //定义DMA通道
 #define DMA_CH1 0
@@ -58,20 +58,20 @@ struct DMA
 
 void enr_dma(void)
 {
-    SET_BIT( (RCC->AHBENR), (1 << 0) );
+    SET_BIT((RCC->AHBENR), (1 << 0));
 }
 
 void init_dma(int channel_num, int priority_level, int msize, int psize, int minc, int circ, int dir)
 {
     CLEAN_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (0x3 << 12));
-    SET_BIT(  (DMA->DMA_CHANNEL[channel_num].CCR), (priority_level << 12)); //设置通道优先级
+    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (priority_level << 12)); //设置通道优先级
     CLEAN_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (0x3 << 10)); 
-    SET_BIT(  (DMA->DMA_CHANNEL[channel_num].CCR), (msize << 10));          //设置存储器数据宽度
-    CLEAN_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (0x3 << 8 ));
-    SET_BIT(  (DMA->DMA_CHANNEL[channel_num].CCR), (psize << 8 ));          //设置外设数据宽度
-    SET_BIT(  (DMA->DMA_CHANNEL[channel_num].CCR), (minc << 7 ));           //设置存储器地址增量模式
-    SET_BIT(  (DMA->DMA_CHANNEL[channel_num].CCR), (dir << 4 ));            //设置数据传输方向
-    SET_BIT(  (DMA->DMA_CHANNEL[channel_num].CCR), (circ << 5 ));           //设置循环模式
+    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (msize << 10));          //设置存储器数据宽度
+    CLEAN_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (0x3 << 8));
+    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (psize << 8));          //设置外设数据宽度
+    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (minc << 7));           //设置存储器地址增量模式
+    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (dir << 4));            //设置数据传输方向
+    SET_BIT((DMA->DMA_CHANNEL[channel_num].CCR), (circ << 5));           //设置循环模式
 }
 
 //根据宏定义，传入的target_address是一个结构体指针，传参时需要做强制类型转换(unsigned int)

@@ -2,13 +2,13 @@
 #define I2C_H
 
 //定义设置高低电平
-#define SCK_UP   BSRR_SET((GPIOA->BSRR),(1 << 5))
-#define SCK_DOWN BSRR_CLEAN((GPIOA->BSRR),(1 << 5))
-#define SDA_UP   BSRR_SET((GPIOA->BSRR),(1 << 10))
-#define SDA_DOWN BSRR_CLEAN((GPIOA->BSRR),(1 << 10))
+#define SCK_UP   BSRR_SET((GPIOA->BSRR), (1 << 5))
+#define SCK_DOWN BSRR_CLEAN((GPIOA->BSRR), (1 << 5))
+#define SDA_UP   BSRR_SET((GPIOA->BSRR), (1 << 10))
+#define SDA_DOWN BSRR_CLEAN((GPIOA->BSRR), (1 << 10))
 
 //定义ack应答信号检测
-#define ACK_DETECTION READ_BIT((GPIOA->IDR),(1 << 10))
+#define ACK_DETECTION READ_BIT((GPIOA->IDR), (1 << 10))
 #define ACK_ON  0
 #define ACK_OFF 1
 
@@ -42,7 +42,7 @@ void i2c_send (unsigned char send_num)
     for(int i = 7; i >= 0; i--) {
         SCK_DOWN;
         delay_us(delay_normal);
-        if (READ_BIT((send_num),(1 << i))) 
+        if (READ_BIT((send_num), (1 << i))) 
         {
             SDA_UP; 
         }
@@ -75,7 +75,7 @@ void cmd_write(unsigned char cmd)
     i2c_over();
 }
 
-void double_cmd_write(unsigned char cmd_1,unsigned char cmd_2)
+void double_cmd_write(unsigned char cmd_1, unsigned char cmd_2)
 {
     i2c_start();
     unsigned char slave_address = 0x78;
@@ -117,31 +117,31 @@ void oled_clean(void)
 void oled_init(void)
 {
     delay_ms(delay_init);
-    cmd_write(0xAE);             //关闭屏幕
-    double_cmd_write(0xA8,0x3F); //Set MUX Ratio
-    double_cmd_write(0xD3,0x00); //Set Display Offset
-    cmd_write(0x40);             //Set Display Start Line
-    double_cmd_write(0x20,0x00); //设置垂直寻址
-    cmd_write(0xA1);             //Set Segment re-map 
-    cmd_write(0xC8);             //Set COM Output Scan Direction 
-    double_cmd_write(0xDA,0x12); //Set COM Pins hardware cofiguration
-    double_cmd_write(0x81,0x7F); //Set Contrast Control
-    cmd_write(0xA4);             //Disable Entire Display on 
-    cmd_write(0xA6);             //Set Normal Display
-    double_cmd_write(0xD5,0x80); //Set Osc Frequency
-    double_cmd_write(0xD9,0xF1); //Set Pre-charge Period
-    double_cmd_write(0xDB,0x30); //Set VCOMH Deselete Level
-    double_cmd_write(0x8D,0x14); //Enable Charge Pump Regulato
+    cmd_write(0xAE);              //关闭屏幕
+    double_cmd_write(0xA8, 0x3F); //Set MUX Ratio
+    double_cmd_write(0xD3, 0x00); //Set Display Offset
+    cmd_write(0x40);              //Set Display Start Line
+    double_cmd_write(0x20, 0x00); //设置垂直寻址
+    cmd_write(0xA1);              //Set Segment re-map 
+    cmd_write(0xC8);              //Set COM Output Scan Direction 
+    double_cmd_write(0xDA, 0x12); //Set COM Pins hardware cofiguration
+    double_cmd_write(0x81, 0x7F); //Set Contrast Control
+    cmd_write(0xA4);              //Disable Entire Display on 
+    cmd_write(0xA6);              //Set Normal Display
+    double_cmd_write(0xD5, 0x80); //Set Osc Frequency
+    double_cmd_write(0xD9, 0xF1); //Set Pre-charge Period
+    double_cmd_write(0xDB, 0x30); //Set VCOMH Deselete Level
+    double_cmd_write(0x8D, 0x14); //Enable Charge Pump Regulato
     oled_clean();
-    cmd_write(0xAF);             //Display On
+    cmd_write(0xAF);              //Display On
 }
 
 void oled_display(const unsigned char *display_num)
 {
-    double_cmd_write(0x21,0x00); //Column Start 0
-    cmd_write(0x7F);             //Column End 127
-    double_cmd_write(0x22,0x00); //Page Start 0
-    cmd_write(0x07);             //Page End 7   
+    double_cmd_write(0x21, 0x00); //Column Start 0
+    cmd_write(0x7F);              //Column End 127
+    double_cmd_write(0x22, 0x00); //Page Start 0
+    cmd_write(0x07);              //Page End 7   
     i2c_start();
     i2c_send(0x78);       
     i2c_send(0x40);

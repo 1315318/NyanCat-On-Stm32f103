@@ -16,6 +16,6 @@ struct Flash
 };
 
 //定义Flash初地址
-#define Flash ((volatile struct Flash*)0x40022000)
+#define Flash ((volatile struct Flash*) 0x40022000)
 
 #endif

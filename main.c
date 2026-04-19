@@ -16,9 +16,9 @@ PB4 (NJTRST)：JTAG 专用*/
 #include "i2c.h"           //I2C协议的实现和OLED屏幕初始化与显示函数
 
 //PC13
-#define RCC_APB2ENR (*(volatile unsigned int*)0x40021018) 
-#define GPIOC_CRH   (*(volatile unsigned int*)0x40011004)
-#define GPIOC_ODR   (*(volatile unsigned int*)0x4001100C)
+#define RCC_APB2ENR (*(volatile unsigned int*) 0x40021018) 
+#define GPIOC_CRH   (*(volatile unsigned int*) 0x40011004)
+#define GPIOC_ODR   (*(volatile unsigned int*) 0x4001100C)
 
 #define delay_change    1000 //切换延时
 #define delay_animation 10   //动画延时
@@ -26,15 +26,15 @@ PB4 (NJTRST)：JTAG 专用*/
 int main(void) 
 {
     //PC13
-    SET_BIT((RCC_APB2ENR),(1 << 4));
-    CLEAN_BIT((GPIOC_CRH),(0xF << 20));
-    SET_BIT((GPIOC_CRH),(0x3 << 20));
+    SET_BIT((RCC_APB2ENR), (1 << 4));
+    CLEAN_BIT((GPIOC_CRH), (0xF << 20));
+    SET_BIT((GPIOC_CRH), (0x3 << 20));
     //GPIO端口初始化
     enr_gpio(GPIOA);
-    init_gpio(GPIOA,5,GPIO_MODE_OL);
-    init_gpio(GPIOA,10,GPIO_MODE_OL);
-    set_gpio(GPIOA,5,HIGH);
-    set_gpio(GPIOA,10,HIGH);
+    init_gpio(GPIOA, 5, GPIO_MODE_OL);
+    init_gpio(GPIOA, 10, GPIO_MODE_OL);
+    set_gpio(GPIOA, 5, HIGH);
+    set_gpio(GPIOA, 10, HIGH);
     //OLED初始化
     oled_init();
     oled_display(nyan_cat);
