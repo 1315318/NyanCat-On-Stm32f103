@@ -31,12 +31,10 @@ struct TIMx
 #define TIM4 ((volatile struct TIMx*)0x40000800)
 
 //定义TIMx通道宏
-#define CH1 1
-#define CH2 2
-#define CH3 3
-#define CH4 4
-
-#define AUDIO_SIZE 26702
+#define TIMx_CH1 1
+#define TIMx_CH2 2
+#define TIMx_CH3 3
+#define TIMx_CH4 4
 
 void enr_pwm(volatile struct TIMx* tim_type)
 {
@@ -59,28 +57,28 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num,int psc)
  
     if (tim_type == TIM2)
     {
-        if (channel_num == CH1)
+        if (channel_num == TIMx_CH1)
         { 
             CLEAN_BIT((TIM2->CCMR1),(7 << 4));
             SET_BIT((TIM2->CCMR1),(6 << 4));   //设置PWM模式1
             SET_BIT((TIM2->CCMR1),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOA,0,GPIO_MODE_AFPP); //设置PA0引脚为复用推挽输出模式
         }
-        if (channel_num == CH2)
+        if (channel_num == TIMx_CH2)
         {
             CLEAN_BIT((TIM2->CCMR1),(7 << 12));
             SET_BIT((TIM2->CCMR1),(6 << 12));  //设置PWM模式1
             SET_BIT((TIM2->CCMR1),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOA,1,GPIO_MODE_AFPP); //设置PA1引脚为复用推挽输出模式
         }
-        if (channel_num == CH3)
+        if (channel_num == TIMx_CH3)
         {
             CLEAN_BIT((TIM2->CCMR2),(7 << 4));
             SET_BIT((TIM2->CCMR2),(6 << 4));   //设置PWM模式1
             SET_BIT((TIM2->CCMR2),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOA,2,GPIO_MODE_AFPP); //设置PA2引脚为复用推挽输出模式
         }
-        if (channel_num == CH4)
+        if (channel_num == TIMx_CH4)
         {
             CLEAN_BIT((TIM2->CCMR2),(7 << 12));
             SET_BIT((TIM2->CCMR2),(6 << 12));  //设置PWM模式1
@@ -90,28 +88,28 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num,int psc)
     }
     if (tim_type == TIM3)
     {
-        if (channel_num == CH1)
+        if (channel_num == TIMx_CH1)
         { 
             CLEAN_BIT((TIM3->CCMR1),(7 << 4));
             SET_BIT((TIM3->CCMR1),(6 << 4));   //设置PWM模式1
             SET_BIT((TIM3->CCMR1),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOA,6,GPIO_MODE_AFPP); //设置PA6引脚为复用推挽输出模式
         }
-        if (channel_num == CH2)
+        if (channel_num == TIMx_CH2)
         {
             CLEAN_BIT((TIM3->CCMR1),(7 << 12));
             SET_BIT((TIM3->CCMR1),(6 << 12));  //设置PWM模式1
             SET_BIT((TIM3->CCMR1),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOA,7,GPIO_MODE_AFPP); //设置PA7引脚为复用推挽输出模式
         }
-        if (channel_num == CH3)
+        if (channel_num == TIMx_CH3)
         {
             CLEAN_BIT((TIM3->CCMR2),(7 << 4));
             SET_BIT((TIM3->CCMR2),(6 << 4));   //设置PWM模式1
             SET_BIT((TIM3->CCMR2),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOB,0,GPIO_MODE_AFPP); //设置PB0引脚为复用推挽输出模式
         }
-        if (channel_num == CH4)
+        if (channel_num == TIMx_CH4)
         {
             CLEAN_BIT((TIM3->CCMR2),(7 << 12));
             SET_BIT((TIM3->CCMR2),(6 << 12));  //设置PWM模式1
@@ -121,28 +119,28 @@ void init_pwm(volatile struct TIMx* tim_type,int channel_num,int psc)
     }
     if (tim_type == TIM4)
     {
-        if (channel_num == CH1)
+        if (channel_num == TIMx_CH1)
         { 
             CLEAN_BIT((TIM4->CCMR1),(7 << 4));
             SET_BIT((TIM4->CCMR1),(6 << 4));   //设置PWM模式1
             SET_BIT((TIM4->CCMR1),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOB,6,GPIO_MODE_AFPP); //设置PB6引脚为复用推挽输出模式
         }
-        if (channel_num == CH2)
+        if (channel_num == TIMx_CH2)
         {
             CLEAN_BIT((TIM4->CCMR1),(7 << 12));
             SET_BIT((TIM4->CCMR1),(6 << 12));  //设置PWM模式1
             SET_BIT((TIM4->CCMR1),(1 << 11));  //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOB,7,GPIO_MODE_AFPP); //设置PB7引脚为复用推挽输出模式
         }
-        if (channel_num == CH3)
+        if (channel_num == TIMx_CH3)
         {
             CLEAN_BIT((TIM4->CCMR2),(7 << 4));
             SET_BIT((TIM4->CCMR2),(6 << 4));   //设置PWM模式1
             SET_BIT((TIM4->CCMR2),(1 << 3));   //开启TIMx_CCR1寄存器预装载功能
             init_gpio(GPIOB,8,GPIO_MODE_AFPP); //设置PB8引脚为复用推挽输出模式
         }
-        if (channel_num == CH4)
+        if (channel_num == TIMx_CH4)
         {
             CLEAN_BIT((TIM4->CCMR2),(7 << 12));
             SET_BIT((TIM4->CCMR2),(6 << 12));  //设置PWM模式1
@@ -169,7 +167,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
     int arr_num = 1000000 / frequency;
     int ccr_num = duty_cycle * arr_num / 100;
     tim_type->ARR = arr_num - 1;             //写入输出频率值，时钟频率1MHZ
-    if (channel_num == CH1)
+    if (channel_num == TIMx_CH1)
     { 
         tim_type->CCR1 = ccr_num;
         if (mode == HIGH)
@@ -182,7 +180,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         }
         SET_BIT((tim_type->CCER),(1 << 0));  //输出使能
     }
-    if (channel_num == CH2)
+    if (channel_num == TIMx_CH2)
     {
         tim_type->CCR2 = ccr_num;
         if (mode == HIGH)
@@ -195,7 +193,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         }
         SET_BIT((tim_type->CCER),(1 << 4));  //输出使能
     }
-    if (channel_num == CH3)
+    if (channel_num == TIMx_CH3)
     {
         tim_type->CCR3 = ccr_num;
         if (mode == HIGH)
@@ -208,7 +206,7 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
         }
         SET_BIT((tim_type->CCER),(1 << 8));  //输出使能
     }
-    if (channel_num == CH4)
+    if (channel_num == TIMx_CH4)
     {
         tim_type->CCR4 = ccr_num;
         if (mode == HIGH)
@@ -224,10 +222,12 @@ void set_pwm(volatile struct TIMx* tim_type,int channel_num,int mode,int frequen
     SET_BIT((tim_type->EGR),(1));            //产生更新事件
 }
 
+#define AUDIO_SIZE 26702
+
 void audio_play(void)
 {
     enr_pwm(TIM2);
-    init_pwm(TIM2,CH1,0);
+    init_pwm(TIM2,TIMx_CH1,0);
     TIM2->ARR = 255;
     SET_BIT((TIM2->CCER),(1 << 0)); //输出使能
     for(int i = 0;i < AUDIO_SIZE;i++)
