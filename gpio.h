@@ -62,7 +62,7 @@ void enr_gpio(volatile struct GPIOx* gpio_type)
 }
 
 //gpio_type为引脚类型，pin_num为引脚号，范围0～15，mode为输出模式
-void init_gpio(volatile struct GPIOx* gpio_type, int pin_num, int mode)
+void init_gpio(volatile struct GPIOx* gpio_type, unsigned char pin_num, unsigned char mode)
 {
     if (pin_num >=0 && pin_num <= 7)
     {
@@ -77,7 +77,7 @@ void init_gpio(volatile struct GPIOx* gpio_type, int pin_num, int mode)
 }
 
 //gpio_type为引脚类型，pin_num为引脚号，范围0～15
-void set_gpio(volatile struct GPIOx* gpio_type, int pin_num, int level)
+void set_gpio(volatile struct GPIOx* gpio_type, unsigned char pin_num, unsigned char level)
 {
     if (level == LOW)
     {
@@ -89,4 +89,4 @@ void set_gpio(volatile struct GPIOx* gpio_type, int pin_num, int level)
     }  
 }
 
-#endif 10
+#endif
