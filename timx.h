@@ -2,7 +2,7 @@
 #define TIMX_H
 
 //定义通用定时器寄存器
-struct TIMx
+struct TIM
 {
     volatile unsigned int CR1;
     volatile unsigned int CR2;
@@ -26,11 +26,11 @@ struct TIMx
 };
 
 //定义通用定时寄存器初地址
-#define TIM2 ((volatile struct TIMx*) 0x40000000)
-#define TIM3 ((volatile struct TIMx*) 0x40000400)
-#define TIM4 ((volatile struct TIMx*) 0x40000800)
+#define TIM2 ((volatile struct TIM*) 0x40000000)
+#define TIM3 ((volatile struct TIM*) 0x40000400)
+#define TIM4 ((volatile struct TIM*) 0x40000800)
 
-//定义TIMx通道
+//定义TIM通道
 #define TIM_CH1 ((unsigned char) 1)
 #define TIM_CH2 ((unsigned char) 2)
 #define TIM_CH3 ((unsigned char) 3)
@@ -58,10 +58,6 @@ struct TIMx
 #define URS_MULTI ((unsigned char) 0) //多个事件产生更新中断或DMA请求
 #define URS_SINGL ((unsigned char) 1) //只有计数器溢出/下溢才产生更新中断或DMA请求
 
-//定义禁止更新事件开关
-#define UIDS_OFF  ((unsigned char) 0) //允许更新事件
-#define UIDS_ON ((unsigned char) 1)   //禁止更新事件
-
 //定义触发DMA请求开关
 #define TDE_OFF ((unsigned char) 0) //禁止触发DMA请求
 #define TDE_ON  ((unsigned char) 1) //允许触发DMA请求
@@ -82,7 +78,7 @@ struct TIMx
 //定义init_pwm配置结构体
 struct INIT_CONFIG
 {
-    volatile struct TIMx* tim_type;
+    volatile struct TIM* tim_type;
     unsigned char channel_num;
     unsigned char apre;
     unsigned char ali_type;
@@ -96,7 +92,7 @@ struct INIT_CONFIG
     unsigned char ocpe;
 };
 
-void enr_pwm(volatile struct TIMx* tim_type)
+void enr_tim(volatile struct TIM* tim_type)
 {
     if (tim_type == TIM2)
     {
@@ -112,7 +108,7 @@ void enr_pwm(volatile struct TIMx* tim_type)
     }
 }
 
-void init_pwm(struct INIT_CONFIG* init_config)
+void init_tim(struct INIT_CONFIG* init_config)
 {
     SET_BIT((init_config->tim_type->CR1), (init_config->ali_type << 5)); //设置中央对齐模式模式
     SET_BIT((init_config->tim_type->CR1), (init_config->dir << 4));      //设置计数器计数方向
@@ -131,44 +127,40 @@ void init_pwm(struct INIT_CONFIG* init_config)
     {
         CLEAN_BIT((init_config->tim_type->CCMR2), (0x7 << ((init_config->channel_num - 3) * 8 + 4)));
         SET_BIT((init_config->tim_type->CCMR2), (init_config->ocm << ((init_config->channel_num - 3) * 8 + 4)));  //设置输出模式
-        SET_BIT((init_config->tim_type->CCMR2), (init_config->ocpe << ((init_config->channel_num - 3) * 8 + 3)));  //设置TIMx_CCR1寄存器预装载功能
+        SET_BIT((init_config->tim_type->CCMR2), (init_config->ocpe << ((init_config->channel_num - 3) * 8 + 3))); //设置TIMx_CCR1寄存器预装载功能
     }
-    SET_BIT((init_config->tim_type->EGR), (init_config->ug << 0));       //设置是否产生更新事件
+    SET_BIT((init_config->tim_type->EGR), (1 << 0));                                                              //产生更新事件
 }
 
-void set_pwm(volatile struct TIMx* tim_type, unsigned char channel_num,  unsigned int frequency, unsigned char duty_cycle, unsigned char psc, unsigned char mode)
+void set_tim(volatile struct TIM* tim_type,unsigned char channel_num, unsigned char psc, unsigned int arr, unsigned char ccr, unsigned char mode)
 {
-    if (frequency == 0)
+    tim_type->PSC = psc;
+    tim_type->ARR = arr;  
+    switch(channel_num)
     {
-        return;
+        case 1: tim_type->CCR1 = crr; break;
+        case 2: tim_type->CCR2 = crr; break;
+        case 3: tim_type->CCR3 = crr; break;
+        case 4: tim_type->CCR4 = crr; break;
     }
-    int arr_num = 1000000 / frequency;
-    int ccr_num = duty_cycle * arr_num / 100;
-    
-    tim_type->PSC = psc;                  //设置预分频器的值
-
-    tim_type->ARR = arr_num - 1;              //写入输出频率值
-
-        tim_type->CCR1 = ccr_num;
-        if (mode == HIGH)
-        {
-            CLEAN_BIT((tim_type->CCER), (1 << 1));
-        }
-        if (mode == LOW)
-        {
-            SET_BIT((tim_type->CCER), (1 << 1));
-        }
-        SET_BIT((tim_type->CCER), (1 << 0));  //输出使能    
-    
-    SET_BIT((tim_type->EGR), (1));            //产生更新事件
+    if (mode == HIGH)
+    {
+        CLEAN_BIT((tim_type->CCER), (1 << ((channel_num - 1) * 4 + 1)));
+    }
+    if (mode == LOW)
+    {
+        SET_BIT((tim_type->CCER), (1 << ((channel_num - 1) * 4 + 1)));
+    }
+    SET_BIT((tim_type->CCER), (1 << (channel_num - 1) * 4)); //输出使能    
+    SET_BIT((tim_type->EGR), (1));                           //产生更新事件
 }
 
 #define AUDIO_SIZE 26702
 
 void audio_play(void)
 {
-    enr_pwm(TIM2);
-    enr_pwm(TIM3);
+    enr_tim(TIM2);
+    enr_tim(TIM3);
     struct INIT_CONFIG tim2_config = { 
         .tim_type    = TIM2,
         .channel_num = TIM_CH1,
@@ -177,7 +169,6 @@ void audio_play(void)
         .dir         = DIR_UP,
         .opm         = OPM_OFF,
         .urs         = URS_SINGL,
-        .uids        = UIDS_OFF,
         .tde         = TDE_OFF,
         .ug          = UG_ON,
         .ocm         = OCM_PWM1,
@@ -191,14 +182,13 @@ void audio_play(void)
         .dir         = DIR_UP,
         .opm         = OPM_OFF,
         .urs         = URS_SINGL,
-        .uids        = UIDS_OFF,
         .tde         = TDE_ON,
         .ug          = UG_ON,
         .ocm         = OCM_FRZE,
         .ocpe        = OCPE_OFF,
     };
-    init_pwm(&tim2_config);
-    init_pwm(&tim3_config);
+    init_tim(&tim2_config);
+    init_tim(&tim3_config);
     TIM2->ARR = 255;
     SET_BIT((TIM2->CCER), (1 << 0)); //输出使能
     TIM3->PSC = 35;                   // 分频系数 36

@@ -5,7 +5,6 @@ PB3 (JTDO)：JTAG 专用
 PB4 (NJTRST)：JTAG 专用*/
 
 #include "base_define.h"   //位操作及高低电平宏的定义
-
 #include "nyancat_video.h" //图像数组
 #include "nyancat_audio.h" //音频数组
 #include "flash.h"         //Flash寄存器及初地址相关定义
