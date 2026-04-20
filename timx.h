@@ -138,10 +138,10 @@ void set_tim(volatile struct TIM* tim_type,unsigned char channel_num, unsigned c
     tim_type->ARR = arr;  
     switch(channel_num)
     {
-        case 1: tim_type->CCR1 = crr; break;
-        case 2: tim_type->CCR2 = crr; break;
-        case 3: tim_type->CCR3 = crr; break;
-        case 4: tim_type->CCR4 = crr; break;
+        case 1: tim_type->CCR1 = ccr; break;
+        case 2: tim_type->CCR2 = ccr; break;
+        case 3: tim_type->CCR3 = ccr; break;
+        case 4: tim_type->CCR4 = ccr; break;
     }
     if (mode == HIGH)
     {
@@ -151,8 +151,9 @@ void set_tim(volatile struct TIM* tim_type,unsigned char channel_num, unsigned c
     {
         SET_BIT((tim_type->CCER), (1 << ((channel_num - 1) * 4 + 1)));
     }
-    SET_BIT((tim_type->CCER), (1 << (channel_num - 1) * 4)); //输出使能    
-    SET_BIT((tim_type->EGR), (1));                           //产生更新事件
+    SET_BIT((tim_type->CCER), (1 << (channel_num - 1) * 4)); //输出使能
+    SET_BIT((tim_type->CR1), (1 << 0));                      //计数器使能    
+    SET_BIT((tim_type->EGR), (1 << 0));                      //产生更新事件
 }
 
 #define AUDIO_SIZE 26702
@@ -189,17 +190,11 @@ void audio_play(void)
     };
     init_tim(&tim2_config);
     init_tim(&tim3_config);
-    TIM2->ARR = 255;
-    SET_BIT((TIM2->CCER), (1 << 0)); //输出使能
-    TIM3->PSC = 35;                   // 分频系数 36
-    TIM3->ARR = 249;                  // 计数 250 次溢出
+    set_tim(TIM2, TIM_CH1, 0, 255, 0, HIGH);
+    set_tim(TIM3, TIM_CH1, 35, 249, 0, HIGH);
     enr_dma();
     init_dma(DMA_CH3, DMA_ULTRA, MSIZE_8BIT, PSIZE_16BIT, MINC_ON, CIRC_ON, DIR_MSI);
     set_dma(DMA_CH3, AUDIO_SIZE, (unsigned int)&TIM2->CCR1, (unsigned int)nyancat_audio);
-    SET_BIT(TIM2->EGR, 1);                            // 刷新 TIM2 寄存器
-    SET_BIT(TIM3->EGR, 1);                            // 刷新 TIM3 寄存器
-    SET_BIT(TIM2->CR1, (1 << 0));                     // 启动载波定时器
-    SET_BIT(TIM3->CR1, (1 << 0));                     // 启动节拍定时器（此时歌声开始）
     enr_gpio(GPIOA);
     init_gpio(GPIOA, GPIO_CH0, GPIO_MODE_AFPP);
 }
