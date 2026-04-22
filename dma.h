@@ -57,11 +57,13 @@ struct DMA
 #define DIR_PSI ((unsigned char) 0) //从外设读
 #define DIR_MSI ((unsigned char) 1) //从存储器读
 
+//RCC对应时钟使能
 void enr_dma(void)
 {
     SET_BIT((RCC->AHBENR), (1 << 0));
 }
 
+//静态参数初始化
 void init_dma(unsigned char channel_num, unsigned char priority_level, unsigned char msize, 
     unsigned char psize, unsigned char minc, unsigned char circ, unsigned char dir)
 {

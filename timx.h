@@ -92,6 +92,7 @@ struct INIT_CONFIG
     unsigned char ocpe;
 };
 
+//RCC对应时钟使能
 void enr_tim(volatile struct TIM* tim_type)
 {
     if (tim_type == TIM2)
@@ -108,6 +109,8 @@ void enr_tim(volatile struct TIM* tim_type)
     }
 }
 
+
+//静态参数初始化
 void init_tim(struct INIT_CONFIG* init_config)
 {
     SET_BIT((init_config->tim_type->CR1), (init_config->ali_type << 5)); //设置中央对齐模式模式
@@ -132,6 +135,7 @@ void init_tim(struct INIT_CONFIG* init_config)
     SET_BIT((init_config->tim_type->EGR), (1 << 0));                                                              //产生更新事件
 }
 
+//动态参数初始化
 void set_tim(volatile struct TIM* tim_type,unsigned char channel_num, unsigned char psc, unsigned int arr, unsigned char ccr, unsigned char mode)
 {
     tim_type->PSC = psc;
@@ -156,8 +160,10 @@ void set_tim(volatile struct TIM* tim_type,unsigned char channel_num, unsigned c
     SET_BIT((tim_type->EGR), (1 << 0));                      //产生更新事件
 }
 
+//音频数据长度
 #define AUDIO_SIZE 26702
 
+//音频播放
 void audio_play(void)
 {
     enr_tim(TIM2);

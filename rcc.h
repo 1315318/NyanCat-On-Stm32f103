@@ -19,6 +19,7 @@ struct RCC
 //定义RCC初地址
 #define RCC ((volatile struct RCC*) 0x40021000)
 
+//系统时钟初始化
 void SystemInit(void) 
 {
     SET_BIT((RCC->CR), (1 << 16));              //HSE使能

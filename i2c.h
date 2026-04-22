@@ -16,6 +16,7 @@
 #define delay_normal ((unsigned char) 1)
 #define delay_init   ((unsigned char) 100)
 
+//开始信号
 void i2c_start(void)
 {
     SDA_UP;                 
@@ -27,6 +28,7 @@ void i2c_start(void)
     delay_us(delay_normal);
 }
 
+//结束信号
 void i2c_over(void)
 {
     SDA_DOWN; 
@@ -37,6 +39,8 @@ void i2c_over(void)
     delay_us(delay_normal);
 }
 
+
+//发送逻辑
 void i2c_send (unsigned char send_num)
 {
     for(int i = 7; i >= 0; i--) {
@@ -64,6 +68,7 @@ void i2c_send (unsigned char send_num)
     delay_us(delay_normal);
 }
 
+//发送单字节命令
 void cmd_write(unsigned char cmd)
 {
     i2c_start();
@@ -75,6 +80,7 @@ void cmd_write(unsigned char cmd)
     i2c_over();
 }
 
+//发送双字节命令
 void double_cmd_write(unsigned char cmd_1, unsigned char cmd_2)
 {
     i2c_start();
@@ -87,6 +93,7 @@ void double_cmd_write(unsigned char cmd_1, unsigned char cmd_2)
     i2c_over();
 }
 
+//发送单字节数据
 void data_write(unsigned char data)
 {
     i2c_start();
@@ -98,6 +105,7 @@ void data_write(unsigned char data)
     i2c_over();
 }
 
+//清屏
 void oled_clean(void)
 {
     double_cmd_write(0x21,0x00); //Column Start 0
@@ -114,6 +122,7 @@ void oled_clean(void)
     i2c_over();
 }
 
+//OLED屏幕初始化
 void oled_init(void)
 {
     delay_ms(delay_init);
@@ -136,6 +145,7 @@ void oled_init(void)
     cmd_write(0xAF);              //Display On
 }
 
+//OLED显示
 void oled_display(const unsigned char *display_num)
 {
     double_cmd_write(0x21, 0x00); //Column Start 0

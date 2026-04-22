@@ -28,16 +28,16 @@ struct GPIOx
 #define GPIO_MODE_AFPP ((unsigned char) 0xB) //复用推挽输出模式，50MHZ
 
 //定义引脚号
-#define GPIO_CH0 ((unsigned char) 0)   
-#define GPIO_CH1 ((unsigned char) 1)   
-#define GPIO_CH2 ((unsigned char) 2)   
-#define GPIO_CH3 ((unsigned char) 3)
-#define GPIO_CH4 ((unsigned char) 4)   
-#define GPIO_CH5 ((unsigned char) 5)   
-#define GPIO_CH6 ((unsigned char) 6)   
-#define GPIO_CH7 ((unsigned char) 7)
-#define GPIO_CH8 ((unsigned char) 8)   
-#define GPIO_CH9 ((unsigned char) 9)   
+#define GPIO_CH0  ((unsigned char) 0)   
+#define GPIO_CH1  ((unsigned char) 1)   
+#define GPIO_CH2  ((unsigned char) 2)   
+#define GPIO_CH3  ((unsigned char) 3)
+#define GPIO_CH4  ((unsigned char) 4)   
+#define GPIO_CH5  ((unsigned char) 5)   
+#define GPIO_CH6  ((unsigned char) 6)   
+#define GPIO_CH7  ((unsigned char) 7)
+#define GPIO_CH8  ((unsigned char) 8)   
+#define GPIO_CH9  ((unsigned char) 9)   
 #define GPIO_CH10 ((unsigned char) 10) 
 #define GPIO_CH11 ((unsigned char) 11)
 #define GPIO_CH12 ((unsigned char) 12) 
@@ -45,6 +45,7 @@ struct GPIOx
 #define GPIO_CH14 ((unsigned char) 14) 
 #define GPIO_CH15 ((unsigned char) 15)
 
+//RCC对应时钟使能
 void enr_gpio(volatile struct GPIOx* gpio_type)
 {
     if (gpio_type == GPIOA)
