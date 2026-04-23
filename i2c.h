@@ -2,15 +2,10 @@
 #define I2C_H
 
 //定义设置高低电平
-#define SCK_UP   BSRR_SET((GPIOA->BSRR), (1 << 5))
-#define SCK_DOWN BSRR_CLEAN((GPIOA->BSRR), (1 << 5))
-#define SDA_UP   BSRR_SET((GPIOA->BSRR), (1 << 10))
-#define SDA_DOWN BSRR_CLEAN((GPIOA->BSRR), (1 << 10))
-
-//定义ack应答信号检测
-#define ACK_DETECTION READ_BIT((GPIOA->IDR), (1 << 10))
-#define ACK_ON  ((unsigned char) 0)
-#define ACK_OFF ((unsigned char) 1)
+#define SCK_UP       BSRR_SET((GPIOA->BSRR), (1 << 5))
+#define SCK_DOWN     BSRR_CLEAN((GPIOA->BSRR), (1 << 5))
+#define SDA_UP       BSRR_SET((GPIOA->BSRR), (1 << 10))
+#define SDA_DOWN     BSRR_CLEAN((GPIOA->BSRR), (1 << 10))
 
 //定义延时宏对应不同延时需求
 #define delay_normal ((unsigned char) 1)

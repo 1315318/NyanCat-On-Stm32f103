@@ -26,54 +26,54 @@ struct TIM
 };
 
 //定义通用定时寄存器初地址
-#define TIM2 ((volatile struct TIM*) 0x40000000)
-#define TIM3 ((volatile struct TIM*) 0x40000400)
-#define TIM4 ((volatile struct TIM*) 0x40000800)
+#define TIM2        ((volatile struct TIM*) 0x40000000)
+#define TIM3        ((volatile struct TIM*) 0x40000400)
+#define TIM4        ((volatile struct TIM*) 0x40000800)
 
 //定义TIM通道
-#define TIM_CH1 ((unsigned char) 1)
-#define TIM_CH2 ((unsigned char) 2)
-#define TIM_CH3 ((unsigned char) 3)
-#define TIM_CH4 ((unsigned char) 4)
+#define TIM_CH1     ((unsigned char) 1)
+#define TIM_CH2     ((unsigned char) 2)
+#define TIM_CH3     ((unsigned char) 3)
+#define TIM_CH4     ((unsigned char) 4)
 
 //定义自动重装载预装载开关
-#define ARPE_OFF ((unsigned char) 0)
-#define APRE_ON  ((unsigned char) 1)
+#define ARPE_OFF    ((unsigned char) 0)
+#define APRE_ON     ((unsigned char) 1)
 
 //定义中央对齐模式
-#define EDGE_ALI    ((unsigned char) 0) //边沿对齐模式
-#define CENTER_ALI1 ((unsigned char) 1) //中央对齐模式1
-#define CENTER_ALI2 ((unsigned char) 2) //中央对齐模式2
-#define CENTER_ALI3 ((unsigned char) 4) //中央对齐模式3
+#define EDGE_ALI    ((unsigned char) 0)   //边沿对齐模式
+#define CENTER_ALI1 ((unsigned char) 1)   //中央对齐模式1
+#define CENTER_ALI2 ((unsigned char) 2)   //中央对齐模式2
+#define CENTER_ALI3 ((unsigned char) 4)   //中央对齐模式3
 
 //定义计数器计数方向
-#define DIR_UP   ((unsigned char) 0) //计数器向上计数
-#define DIR_DOWN ((unsigned char) 1) //计数器向下计数
+#define DIR_UP      ((unsigned char) 0)   //计数器向上计数
+#define DIR_DOWN    ((unsigned char) 1)   //计数器向下计数
 
 //定义单脉冲模式开关
-#define OPM_OFF  ((unsigned char) 0) //在发生更新事件时，计数器不停止
-#define OPM_DOWN ((unsigned char) 1) //在发生下一次更新事件(清除CEN位)时，计数器停止
+#define OPM_OFF     ((unsigned char) 0)   //在发生更新事件时，计数器不停止
+#define OPM_DOWN    ((unsigned char) 1)   //在发生下一次更新事件(清除CEN位)时，计数器停止
 
 //定义更新请求源
-#define URS_MULTI ((unsigned char) 0) //多个事件产生更新中断或DMA请求
-#define URS_SINGL ((unsigned char) 1) //只有计数器溢出/下溢才产生更新中断或DMA请求
+#define URS_MULTI   ((unsigned char) 0)   //多个事件产生更新中断或DMA请求
+#define URS_SINGL   ((unsigned char) 1)   //只有计数器溢出/下溢才产生更新中断或DMA请求
 
 //定义触发DMA请求开关
-#define TDE_OFF ((unsigned char) 0) //禁止触发DMA请求
-#define TDE_ON  ((unsigned char) 1) //允许触发DMA请求
+#define TDE_OFF     ((unsigned char) 0)   //禁止触发DMA请求
+#define TDE_ON      ((unsigned char) 1)   //允许触发DMA请求
 
 //定义更新事件的产生开关
-#define UG_OFF ((unsigned char) 0) //无动作
-#define UG_ON  ((unsigned char) 1) //重新初始化计数器，并产生一个更新事件
+#define UG_OFF      ((unsigned char) 0)   //无动作
+#define UG_ON       ((unsigned char) 1)   //重新初始化计数器，并产生一个更新事件
 
 //定义输出比较模式
-#define OCM_FRZE ((unsigned char) 0)   //冻结模式
-#define OCM_PWM1 ((unsigned char) 0x6) //PWM模式1
-#define OCM_PWM2 ((unsigned char) 0x7) //PWM模式2
+#define OCM_FRZE    ((unsigned char) 0)   //冻结模式
+#define OCM_PWM1    ((unsigned char) 0x6) //PWM模式1
+#define OCM_PWM2    ((unsigned char) 0x7) //PWM模式2
 
 //定义输出比较预装载开关
-#define OCPE_OFF ((unsigned char) 0) //禁止TIMx_CCR1寄存器的预装载功能，可随时写入TIMx_CCR1寄存器
-#define OCPE_ON  ((unsigned char) 1) //开启TIMx_CCR1寄存器的预装载功能，读写操作仅对预装载寄存器操作
+#define OCPE_OFF    ((unsigned char) 0)   //禁止TIMx_CCR1寄存器的预装载功能，可随时写入TIMx_CCR1寄存器
+#define OCPE_ON     ((unsigned char) 1)   //开启TIMx_CCR1寄存器的预装载功能，读写操作仅对预装载寄存器操作
 
 //定义init_pwm配置结构体
 struct INIT_CONFIG
@@ -113,13 +113,13 @@ void enr_tim(volatile struct TIM* tim_type)
 //静态参数初始化
 void init_tim(struct INIT_CONFIG* init_config)
 {
-    SET_BIT((init_config->tim_type->CR1), (init_config->ali_type << 5)); //设置中央对齐模式模式
-    SET_BIT((init_config->tim_type->CR1), (init_config->dir << 4));      //设置计数器计数方向
-    SET_BIT((init_config->tim_type->CR1), (init_config->uids << 1));     //设置是否允许UEV事件
-    SET_BIT((init_config->tim_type->CR1), (init_config->opm) << 3);      //设置是否开启单脉冲模式
-    SET_BIT((init_config->tim_type->CR1), (init_config->apre << 7));     //设置自动重装载预装载
-    SET_BIT((init_config->tim_type->CR1), (init_config->urs << 2));      //设置更新源
-    SET_BIT((init_config->tim_type->DIER), (init_config->tde << 8));     //设置是否更新的DMA请求
+    SET_BIT((init_config->tim_type->CR1), (init_config->ali_type << 5));                                          //设置中央对齐模式模式
+    SET_BIT((init_config->tim_type->CR1), (init_config->dir << 4));                                               //设置计数器计数方向
+    SET_BIT((init_config->tim_type->CR1), (init_config->uids << 1));                                              //设置是否允许UEV事件
+    SET_BIT((init_config->tim_type->CR1), (init_config->opm) << 3);                                               //设置是否开启单脉冲模式
+    SET_BIT((init_config->tim_type->CR1), (init_config->apre << 7));                                              //设置自动重装载预装载
+    SET_BIT((init_config->tim_type->CR1), (init_config->urs << 2));                                               //设置更新源
+    SET_BIT((init_config->tim_type->DIER), (init_config->tde << 8));                                              //设置是否更新的DMA请求
     if (init_config->channel_num == TIM_CH1 || init_config->channel_num == TIM_CH2)
     {
         CLEAN_BIT((init_config->tim_type->CCMR1), (0x7 << ((init_config->channel_num - 1) * 8 + 4)));
@@ -196,11 +196,11 @@ void audio_play(void)
     };
     init_tim(&tim2_config);
     init_tim(&tim3_config);
-    set_tim(TIM2, TIM_CH1, 0, 255, 0, HIGH);
-    set_tim(TIM3, TIM_CH1, 35, 249, 0, HIGH);
+    set_tim(TIM2, TIM_CH1, 0, 255, 0, HIGH);                                              //TIM2作为载波，时钟72MHZ
+    set_tim(TIM3, TIM_CH1, 35, 249, 0, HIGH);                                             //TIM3触发DMA请求，时钟8KHZ
     enr_dma();
     init_dma(DMA_CH3, DMA_ULTRA, MSIZE_8BIT, PSIZE_16BIT, MINC_ON, CIRC_ON, DIR_MSI);
-    set_dma(DMA_CH3, AUDIO_SIZE, (unsigned int)&TIM2->CCR1, (unsigned int)nyancat_audio);
+    set_dma(DMA_CH3, AUDIO_SIZE, (unsigned int)&TIM2->CCR1, (unsigned int)nyancat_audio); //通过DMA直接将音频数据传输到CRR1
     enr_gpio(GPIOA);
     init_gpio(GPIOA, GPIO_CH0, GPIO_MODE_AFPP);
 }

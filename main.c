@@ -16,9 +16,9 @@ PB4 (NJTRST)：JTAG 专用*/
 #include "i2c.h"           //I2C协议的实现和OLED屏幕初始化与显示函数
 
 //PC13
-#define RCC_APB2ENR (*(volatile unsigned int*) 0x40021018) 
-#define GPIOC_CRH   (*(volatile unsigned int*) 0x40011004)
-#define GPIOC_ODR   (*(volatile unsigned int*) 0x4001100C)
+#define RCC_APB2ENR     (*(volatile unsigned int*) 0x40021018) 
+#define GPIOC_CRH       (*(volatile unsigned int*) 0x40011004)
+#define GPIOC_ODR       (*(volatile unsigned int*) 0x4001100C)
 
 #define delay_change    ((unsigned char) 1000) //切换延时
 #define delay_animation ((unsigned char) 10)   //动画延时

@@ -11,7 +11,7 @@ struct SysTick
 };
 
 //定义SysTick初地址
-#define SysTick ((volatile struct SysTick*) 0xE000E010)
+#define SysTick     ((volatile struct SysTick*) 0xE000E010)
 
 //当前SysTick时钟：9MHZ（默认八分频）
 #define SysTick_CLK ((unsigned char) 9) 
