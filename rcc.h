@@ -34,7 +34,7 @@ void SystemInit(void)
     SET_BIT((Flash->ACR), (2));                 //设置Flash延时
     CLEAN_BIT((RCC->CFGR), (3));
     SET_BIT((RCC->CFGR), (2));                  //切换系统时钟为PLL倍频后的HSE
-    while(((RCC->CFGR >> 2) & 3) != 2);        //确认系统时钟切换状态
+    while(((RCC->CFGR >> 2) & 3) != 2);         //确认系统时钟切换状态
     CLEAN_BIT((RCC->CR), (1 << 0));             //关闭HSI
 }
 

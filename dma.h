@@ -1,6 +1,7 @@
 #ifndef DMA_H
 #define DMA_H
 
+//定义DMA寄存器通道配置寄存器
 struct DMA_CHANNEL
 {
     volatile unsigned int CCR;
@@ -10,6 +11,7 @@ struct DMA_CHANNEL
     volatile unsigned int RESERVED; //保留
 };
 
+//定义DMA寄存器
 struct DMA
 {
     volatile unsigned int ISR;
