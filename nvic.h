@@ -1,7 +1,7 @@
 #ifndef INTERRUPT_H
 #define INTERRUPT_H
 
-//NVIC寄存器
+//定义NVIC寄存器
 struct NVIC
 {
     volatile unsigned int  ISER[3];        //中断使能寄存器
@@ -16,7 +16,7 @@ struct NVIC
     volatile unsigned int  RESERVED4[61];  //占位数组
     volatile unsigned char IPR[84];        //中断优先级寄存器
     volatile unsigned int  RESERVED5[695]; //占位数组
-    volatile unsigned int  STIR;           //软件触发中断寄存器
+    volatile unsigned char STIR;           //软件触发中断寄存器
 }
 
 //定义NVIC初地址

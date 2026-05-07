@@ -8,8 +8,8 @@
 #define READ_BIT(REG,BIT)   ((REG) & (BIT))   //检查REG中对应的BIT设置为1的位的值
 
 //定义电平
-#define LOW  ((unsigned char) 0) 
-#define HIGH ((unsigned char) 1)
+#define LOW                 ((unsigned char) 0) 
+#define HIGH                ((unsigned char) 1)
 
 //骗过链接器
 void __libc_init_array(void) {}

@@ -109,7 +109,6 @@ void enr_tim(volatile struct TIM* tim_type)
     }
 }
 
-
 //静态参数初始化
 void init_tim(struct INIT_CONFIG* init_config)
 {
